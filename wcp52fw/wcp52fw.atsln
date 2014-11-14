@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "wcp52fw", "wcp52fw\wcp52fw.cproj", "{F9E3306E-8183-4176-9F15-54F009D6DAAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Release|ARM = Release|ARM
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9E3306E-8183-4176-9F15-54F009D6DAAF}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F9E3306E-8183-4176-9F15-54F009D6DAAF}.Debug|ARM.Build.0 = Debug|ARM
+		{F9E3306E-8183-4176-9F15-54F009D6DAAF}.Release|ARM.ActiveCfg = Release|ARM
+		{F9E3306E-8183-4176-9F15-54F009D6DAAF}.Release|ARM.Build.0 = Release|ARM
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

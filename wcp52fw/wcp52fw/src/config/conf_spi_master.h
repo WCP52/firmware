@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Board configuration.
+ * \brief Spi Master configuration.
  *
- * Copyright (c) 2011-2012 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2011-2013 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -41,41 +41,52 @@
  *
  */
 
-#ifndef CONF_BOARD_H_INCLUDED
-#define CONF_BOARD_H_INCLUDED
+#ifndef CONF_SPI_MASTER_H_INCLUDED
+#define CONF_SPI_MASTER_H_INCLUDED
 
-/** Enable Com Port. */
-#define CONF_BOARD_UART_CONSOLE
+/* Possibility to change low-level configurations here */
 
-/** Usart Hw ID used by the console (UART0). */
-#define CONSOLE_UART_ID          ID_UART0
+//! Default Config Spi Master Delay BCS
+#define CONFIG_SPI_MASTER_DELAY_BCS            0
 
+//! Default Config Spi Master Bits per Transfer Definition
+#define CONFIG_SPI_MASTER_BITS_PER_TRANSFER    8
 
+//! Default Config Spi Master Delay BCT
+#define CONFIG_SPI_MASTER_DELAY_BCT            0
 
-/** SPI MACRO definition */
-#define CONF_BOARD_SPI
+//! Default Config Spi Master Delay BS
+#define CONFIG_SPI_MASTER_DELAY_BS             0
 
-/** SPI slave select MACRO definition */
-#define CONF_BOARD_SPI_NPCS0
+//! Default Config Spi Master Dummy Field
+#define CONFIG_SPI_MASTER_DUMMY                0xFF
 
-/** Spi Hw ID . */
-#define SPI_ID          ID_SPI
+/* Chip select. */
+#define SPI_CHIP_SEL 0
+#define SPI_CHIP_PCS spi_get_pcs(SPI_CHIP_SEL)
 
-/** SPI base address for SPI master mode*/
-#define SPI_MASTER_BASE      SPI
-/** SPI base address for SPI slave mode, (on different board) */
-#define SPI_SLAVE_BASE       SPI
+/* Clock polarity. */
+#define SPI_CLK_POLARITY 0
 
+/* Clock phase. */
+#define SPI_CLK_PHASE 0
 
-/* GPIO pins for synth control */
-#define GPIO_SYNTH_nCS	PIO_PA4_IDX
-#define GPIO_SYNTH_nCS_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_IOUPDATE	PIO_PB3_IDX
-#define GPIO_SYNTH_IOUPDATE_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_PWRDN	PIO_PB2_IDX
-#define GPIO_SYNTH_PWRDN_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_MRST		PIO_PA31_IDX
-#define GPIO_SYNTH_MRST_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
+/* Delay before SPCK. */
+#define SPI_DLYBS 0x40
 
+/* Delay between consecutive transfers. */
+#define SPI_DLYBCT 0x10
 
-#endif /* CONF_BOARD_H_INCLUDED */
+/* Number of commands logged in status. */
+#define NB_STATUS_CMD   20
+
+/* Number of SPI clock configurations. */
+#define NUM_SPCK_CONFIGURATIONS 4
+
+/* SPI Communicate buffer size. */
+#define COMM_BUFFER_SIZE   64
+
+/* Max retry times. */
+#define MAX_RETRY    4
+
+#endif /* CONF_SPI_MASTER_H_INCLUDED */

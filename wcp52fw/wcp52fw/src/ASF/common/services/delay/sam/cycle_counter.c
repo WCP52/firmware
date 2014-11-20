@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Board configuration.
+ * \brief ARM functions for busy-wait delay loops
  *
- * Copyright (c) 2011-2012 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2012-2013 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -41,41 +41,18 @@
  *
  */
 
-#ifndef CONF_BOARD_H_INCLUDED
-#define CONF_BOARD_H_INCLUDED
+#include "cycle_counter.h"
 
-/** Enable Com Port. */
-#define CONF_BOARD_UART_CONSOLE
+// Delay loop is put to SRAM so that FWS will not affect delay time
+OPTIMIZE_HIGH
+RAMFUNC
+void portable_delay_cycles(unsigned long n)
+{
+	UNUSED(n);
 
-/** Usart Hw ID used by the console (UART0). */
-#define CONSOLE_UART_ID          ID_UART0
-
-
-
-/** SPI MACRO definition */
-#define CONF_BOARD_SPI
-
-/** SPI slave select MACRO definition */
-#define CONF_BOARD_SPI_NPCS0
-
-/** Spi Hw ID . */
-#define SPI_ID          ID_SPI
-
-/** SPI base address for SPI master mode*/
-#define SPI_MASTER_BASE      SPI
-/** SPI base address for SPI slave mode, (on different board) */
-#define SPI_SLAVE_BASE       SPI
-
-
-/* GPIO pins for synth control */
-#define GPIO_SYNTH_nCS	PIO_PA4_IDX
-#define GPIO_SYNTH_nCS_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_IOUPDATE	PIO_PB3_IDX
-#define GPIO_SYNTH_IOUPDATE_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_PWRDN	PIO_PB2_IDX
-#define GPIO_SYNTH_PWRDN_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_MRST		PIO_PA31_IDX
-#define GPIO_SYNTH_MRST_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-
-
-#endif /* CONF_BOARD_H_INCLUDED */
+	__asm (
+		"loop: DMB	\n"
+		"SUBS R0, R0, #1  \n"
+		"BNE.N loop         "
+	);
+}

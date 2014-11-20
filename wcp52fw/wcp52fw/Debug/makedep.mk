@@ -2,6 +2,12 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\ASF\common\services\delay\sam\cycle_counter.c
+
+src\ASF\common\services\spi\sam_spi\spi_master.c
+
+src\ASF\sam\drivers\spi\spi.c
+
 src\main.c
 
 src\ASF\common\services\clock\sam4s\sysclk.c

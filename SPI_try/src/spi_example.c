@@ -99,6 +99,8 @@
 #include "conf_board.h"
 #include "conf_clock.h"
 #include "conf_spi_example.h"
+ 
+#include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
 

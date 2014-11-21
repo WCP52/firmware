@@ -12,8 +12,6 @@
 #include "asf.h"
 #include "conf_board.h"
 
-/*TODO: Move to synth_regs.c*/
-#include "synth_regs.h"
 #include "synth.h"
 
 uint8_t FR1[3] = {0};
@@ -77,63 +75,6 @@ void do_cmd_spi (char *arg)
 	if (arg_as_num >= 0 && arg_as_num <= 255) {
 		spi_write (SPI_MASTER_BASE, (uint8_t) arg_as_num, 0, 0);
 	}
-}
-
-void sendControlRegister(uint8_t addr, const uint8_t *data, size_t data_length);
-void sendControlRegister(uint8_t addr, const uint8_t *data, size_t data_length)
-{
-	//TODO: syncio 
-	gpio_set_pin_low(GPIO_SYNTH_nCS);
-	spi_write(SPI_MASTER_BASE, addr, 0, 0);
-	for (size_t i = 0; i < data_length; i++)
-	{
-		spi_write(SPI_MASTER_BASE, data[i], 0, 0);
-	}
-	while (!spi_is_tx_empty (SPI_MASTER_BASE));
-	delay_us (1);
-	gpio_set_pin_high (GPIO_SYNTH_IOUPDATE);
-	delay_us (1);
-	gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
-}
-
-void sendChannelRegister(uint8_t addr, const uint8_t *data, size_t data_length, uint8_t channelNumber);
-void sendChannelRegister(uint8_t addr, const uint8_t *data, size_t data_length, uint8_t channelNumber)
-{
-	if (channelNumber > 1)
-		return;
-	gpio_set_pin_low(GPIO_SYNTH_nCS);
-	spi_write(SPI_MASTER_BASE, 0, 0, 0);
-	if (channelNumber == 0)
-		spi_write(SPI_MASTER_BASE, 0x82, 0, 0);
-	else 
-		spi_write(SPI_MASTER_BASE, 0X42, 0, 0); 
-	spi_write(SPI_MASTER_BASE, addr, 0, 0);
-	for (size_t i = 0; i < data_length; i++)
-	{
-		spi_write(SPI_MASTER_BASE, data[i], 0, 0);
-	}
-	
-	while (!spi_is_tx_empty (SPI_MASTER_BASE));
-	delay_us (1);
-	gpio_set_pin_high (GPIO_SYNTH_IOUPDATE);
-	delay_us (1);
-	gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
-		
-}
-
-void setCh1Freq(void);
-void setCh1Freq(void)
-{
-	sendChannelRegister(CFTW0_ADDR, (uint8_t *) "\0\0\0\x01", 4, 1);
-}
-
-void synthClockInit(void);
-void synthClockInit(void)
-{
-	memset (FR1, 0, sizeof FR1);
-	FR1[FR1_VCOGAIN_I] |= (1 << FR1_VCOGAIN_B);
-	FR1[FR1_PLLRATIO_I] |= (20 << FR1_PLLRATIO_B);
-	sendControlRegister(FR1_ADDR, FR1, sizeof(FR1));
 }
 
 
@@ -226,11 +167,11 @@ void cmd_process (void)
 			break;
 
 		case '2':
-			synthClockInit();
+            synth_initialize_clock ();
 			break;
 
 		case '3':
-			setCh1Freq();
+            synth_set_frequency (1, 1000000.);
 			break;
 	}
 }

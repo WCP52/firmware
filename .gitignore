@@ -1,9 +1,15 @@
+# Other compiler crap
+*.d
+*.lss
+*.map
+*.sym
+
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
-*.d
+*.bin
 
 # Precompiled Headers
 *.gch

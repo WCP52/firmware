@@ -1,43 +1,7 @@
 /**
  * \file
  *
- * \brief ADC temperature sensor example for SAM.
- *
- * Copyright (c) 2011 - 2014 Atmel Corporation. All rights reserved.
- *
- * \asf_license_start
- *
- * \page License
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. The name of Atmel may not be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * 4. This software may only be redistributed and used in connection with an
- *    Atmel microcontroller product.
- *
- * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
- * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * \asf_license_stop
+ * \brief WCP52 gain/phase main loop
  *
  */
 
@@ -50,6 +14,7 @@
 
 /*TODO: Move to synth_regs.c*/
 #include "synth_regs.h"
+#include "synth.h"
 
 uint8_t FR1[3] = {0};
 uint8_t CFR[3] = {0};
@@ -112,27 +77,6 @@ void do_cmd_spi (char *arg)
 	if (arg_as_num >= 0 && arg_as_num <= 255) {
 		spi_write (SPI_MASTER_BASE, (uint8_t) arg_as_num, 0, 0);
 	}
-}
-
-void do_cmd_synthinit (char *arg);
-void do_cmd_synthinit (char *arg)
-{
-    (void) arg;
-
-	gpio_set_pin_low (GPIO_SYNTH_PWRDN);
-	gpio_set_pin_low (GPIO_SYNTH_nCS);
-	gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
-	gpio_set_pin_high (GPIO_SYNTH_MRST);
-	delay_us (5);
-	gpio_set_pin_low (GPIO_SYNTH_MRST);
-	delay_us (1);
-	spi_write (SPI_MASTER_BASE, 0x00, 0, 0);
-	spi_write (SPI_MASTER_BASE, 0x02, 0, 0);
-	while (!spi_is_tx_empty (SPI_MASTER_BASE));
-	delay_us (1);
-	gpio_set_pin_high (GPIO_SYNTH_IOUPDATE);
-	delay_us (1);
-	gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
 }
 
 void sendControlRegister(uint8_t addr, const uint8_t *data, size_t data_length);
@@ -278,11 +222,13 @@ void cmd_process (void)
 		
 		case '1':
 			/* Synthesizer init */
-			do_cmd_synthinit (arg);
+            synth_initialize_interface ();
 			break;
+
 		case '2':
 			synthClockInit();
 			break;
+
 		case '3':
 			setCh1Freq();
 			break;

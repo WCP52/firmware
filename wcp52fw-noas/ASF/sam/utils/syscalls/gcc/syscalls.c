@@ -1,3 +1,6 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 /**
  * \file
  *
@@ -140,3 +143,5 @@ extern int _getpid(void)
 #endif
 /**INDENT-ON**/
 /// @endcond
+//
+#pragma GCC diagnostic pop

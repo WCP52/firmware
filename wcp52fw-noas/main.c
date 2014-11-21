@@ -14,19 +14,6 @@
 
 #include "synth.h"
 
-uint8_t FR1[3] = {0};
-uint8_t CFR[3] = {0};
-uint8_t CFTW0[4] = {0};	
-
-
-struct spi_device spi_dev;
-
-/**
- * \brief Systick handler, start new conversion.
- */
-void SysTick_Handler(void)
-{
-}
 
 /**
  * \brief Configure UART console.

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <assert.h>
 #include "asf.h"
+#include "serial.h"
 #include "conf_board.h"
 
 #include "synth.h"
@@ -22,7 +23,9 @@ static void configure_console(void)
 {
 	const usart_serial_options_t uart_serial_options = {
 		.baudrate = CONF_UART_BAUDRATE,
-		.paritytype = CONF_UART_PARITY
+		.paritytype = CONF_UART_PARITY,
+        .charlength = US_MR_CHRL_8_BIT,
+        .stopbits = false
 	};
 
 	/* Configure console UART. */
@@ -84,7 +87,12 @@ int get_line_from_serial (char *buffer, size_t buflen)
 			puts ("Serial error!\r");
 			return 1;
 		}
-		if (char_from_serial == '\r' || char_from_serial == '\n') {
+        if (char_from_serial == '\r') {
+            /* Ignore character */
+            --i;
+            continue;
+        }
+        else if (char_from_serial == '\n') {
 			/* End of line */
 			buffer[i] = 0;
 			break;
@@ -223,6 +231,16 @@ int main(void)
 			puts("-F- Systick configuration error\r");
 		}
 	}
+
+    for (;;) {
+        int c = getchar ();
+        
+        gpio_toggle_pin (LED0_GPIO);
+
+        if (c > 0) {
+            putchar (c);
+        }
+    }
 
 	for (;;) {
 		cmd_process ();

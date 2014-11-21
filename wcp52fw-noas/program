@@ -1,4 +1,4 @@
 #!/bin/bash
 
-openocd -f /usr/share/openocd/scripts/interface/jlink.cfg -c "program wcp52fw_flash.elf verify reset"
+JLinkExe -device ATSAM4S16C -CommanderScript jlink-script.jlink
 

@@ -169,8 +169,12 @@ void cmd_process (void)
 			break;
 
 		case '3':
-            synth_set_frequency (1, atof (arg));
-			break;
+            {
+                double freq = atof (arg);
+                printf ("Setting frequency to: %f\r\n", freq);
+                synth_set_frequency (1, freq);
+            }
+            break;
 	}
 }
 

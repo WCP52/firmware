@@ -41,7 +41,26 @@ scpi_result_t SCPI_Test(scpi_t * context) {
 
 scpi_result_t SCPI_Reset(scpi_t * context) {
     (void) context;
-    fprintf(stderr, "**Reset\r\n");
+
+    /* Write the reset password */
+    /* Here, we are going to reset the entire chip. This requires writing to
+     * the RSTC (reset controller) control registers. */
+
+    /* Zero out the control register first, so we don't reset prematurely */
+    RSTC->RSTC_CR = 0;
+
+    /* Set the mode register */
+    RSTC->RSTC_MR = 0
+        | RSTC_MR_KEY_PASSWD    /* Chip won't reset without the password */
+        ;
+
+    /* Set the control register */
+    RSTC->RSTC_CR = 0
+        | RSTC_CR_KEY_PASSWD    /* Chip won't reset without the password */
+        | RSTC_CR_PROCRST       /* Reset processor */
+        ;
+
+    /* This return won't happen, of course :D */
     return SCPI_RES_OK;
 }
 

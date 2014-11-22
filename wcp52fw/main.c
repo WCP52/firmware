@@ -148,8 +148,6 @@ void cmd_process (void)
  */
 static void spi_master_initialize(void)
 {
-    puts("-I- Initialize SPI as master\r");
-
     /* Configure an SPI peripheral. */
     spi_enable_clock(SPI_MASTER_BASE);
     spi_disable(SPI_MASTER_BASE);
@@ -205,6 +203,8 @@ int main(void)
     }
 
     SCPI_Init (&scpi_context);
+
+    puts("**Initialization successful\r");
 
     const size_t SMBUFFER_SIZE = 10;
     char smbuffer[10];

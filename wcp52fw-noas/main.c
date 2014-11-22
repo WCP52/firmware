@@ -15,6 +15,9 @@
 
 #include "synth.h"
 
+void SysTick_Handler(void)
+{
+}
 
 /**
  * \brief Configure UART console.
@@ -87,16 +90,16 @@ int get_line_from_serial (char *buffer, size_t buflen)
 			puts ("Serial error!\r");
 			return 1;
 		}
-        if (char_from_serial == '\r') {
-            /* Ignore character */
-            --i;
-            continue;
-        }
         else if (char_from_serial == '\n') {
+			/* End of line */
+            buffer[i] = 0;
+            break;
+		}
+        else if (char_from_serial == '\r') {
 			/* End of line */
 			buffer[i] = 0;
 			break;
-		}
+        }
 		buffer[i] = (char) char_from_serial;
 	}
 	
@@ -105,6 +108,7 @@ int get_line_from_serial (char *buffer, size_t buflen)
 		puts ("Buffer overflow!\r");
 		return 1;
 	} else {
+        buffer[i] = 0;
 		return 0;
 	}
 }
@@ -138,8 +142,7 @@ void cmd_process (void)
 		case 'e':
 		case 'E':
 			/* Echo */
-			puts (arg);
-			puts ("\r");
+            printf ("%s\r\n", arg);
 			break;
 		
 		case 'L':
@@ -231,16 +234,6 @@ int main(void)
 			puts("-F- Systick configuration error\r");
 		}
 	}
-
-    for (;;) {
-        int c = getchar ();
-        
-        gpio_toggle_pin (LED0_GPIO);
-
-        if (c > 0) {
-            putchar (c);
-        }
-    }
 
 	for (;;) {
 		cmd_process ();

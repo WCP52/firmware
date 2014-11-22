@@ -51,30 +51,7 @@ TARGET_FLASH = wcp52fw_flash.elf
 TARGET_SRAM = wcp52fw_sram.elf
 
 # List of C source files.
-CSRCS = \
-	main.c \
-	synth.c \
-	ASF/common/services/serial/usart_serial.c \
-	ASF/common/services/delay/sam/cycle_counter.c \
-	ASF/common/services/clock/sam4s/sysclk.c \
-	ASF/common/services/spi/sam_spi/spi_master.c \
-	ASF/common/utils/stdio/write.c \
-	ASF/common/utils/stdio/read.c \
-	ASF/common/utils/interrupt/interrupt_sam_nvic.c \
-	ASF/sam/boards/sam4s_xplained/led.c \
-	ASF/sam/boards/sam4s_xplained/init.c \
-	ASF/sam/utils/syscalls/gcc/syscalls.c \
-	ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.c \
-	ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.c \
-	ASF/sam/drivers/usart/usart.c \
-	ASF/sam/drivers/uart/uart.c \
-	ASF/sam/drivers/adc/adc_sam3u.c \
-	ASF/sam/drivers/adc/adc.c \
-	ASF/sam/drivers/pmc/pmc.c \
-	ASF/sam/drivers/pmc/sleep.c \
-	ASF/sam/drivers/pio/pio.c \
-	ASF/sam/drivers/pio/pio_handler.c \
-	ASF/sam/drivers/spi/spi.c \
+CSRCS = $(shell find -type f -name '*.c')
 
 # List of assembler source files.
 ASSRCS = 

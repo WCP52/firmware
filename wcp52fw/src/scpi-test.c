@@ -10,16 +10,14 @@
 #include "synth.h"
 
 scpi_result_t TEST_LEDON (scpi_t * context) {
-    scpi_number_t led_number;
+    int32_t led_number;
 
-    if (!SCPI_ParamNumber(context, &led_number, true)) {
+    if (!SCPI_ParamInt(context, &led_number, true)) {
         /* Missing parameter error is already registered */
         return SCPI_RES_ERR;
     }
 
-    unsigned lednum = led_number.value;
-
-    switch (lednum) {
+    switch (led_number) {
         case 0:
             gpio_set_pin_low (LED0_GPIO);
             return SCPI_RES_OK;
@@ -33,16 +31,14 @@ scpi_result_t TEST_LEDON (scpi_t * context) {
 }
 
 scpi_result_t TEST_LEDOFF (scpi_t * context) {
-    scpi_number_t led_number;
+    int32_t led_number;
 
-    if (!SCPI_ParamNumber(context, &led_number, false)) {
+    if (!SCPI_ParamInt(context, &led_number, true)) {
         /* Missing parameter error is already registered */
         return SCPI_RES_ERR;
     }
 
-    unsigned lednum = led_number.value;
-
-    switch (lednum) {
+    switch (led_number) {
         case 0:
             gpio_set_pin_high (LED0_GPIO);
             return SCPI_RES_OK;
@@ -57,11 +53,10 @@ scpi_result_t TEST_LEDOFF (scpi_t * context) {
 
 scpi_result_t TEST_SETNCS (scpi_t *context)
 {
-    scpi_number_t Sval;
-    if (!SCPI_ParamNumber (context, &Sval, false)) {
+    int32_t val;
+    if (!SCPI_ParamInt (context, &val, true)) {
         return SCPI_RES_ERR;
     }
-    unsigned val = Sval.value;
     if (val) {
         gpio_set_pin_high (GPIO_SYNTH_nCS);
     } else {
@@ -72,11 +67,10 @@ scpi_result_t TEST_SETNCS (scpi_t *context)
 
 scpi_result_t TEST_SETIOUP (scpi_t *context)
 {
-    scpi_number_t Sval;
-    if (!SCPI_ParamNumber (context, &Sval, false)) {
+    int32_t val;
+    if (!SCPI_ParamInt (context, &val, true)) {
         return SCPI_RES_ERR;
     }
-    unsigned val = Sval.value;
     if (val) {
         gpio_set_pin_high (GPIO_SYNTH_IOUPDATE);
     } else {
@@ -87,11 +81,10 @@ scpi_result_t TEST_SETIOUP (scpi_t *context)
 
 scpi_result_t TEST_SETPWRDN (scpi_t *context)
 {
-    scpi_number_t Sval;
-    if (!SCPI_ParamNumber (context, &Sval, false)) {
+    int32_t val;
+    if (!SCPI_ParamInt (context, &val, true)) {
         return SCPI_RES_ERR;
     }
-    unsigned val = Sval.value;
     if (val) {
         gpio_set_pin_high (GPIO_SYNTH_PWRDN);
     } else {
@@ -102,11 +95,10 @@ scpi_result_t TEST_SETPWRDN (scpi_t *context)
 
 scpi_result_t TEST_SETMRST (scpi_t *context)
 {
-    scpi_number_t Sval;
-    if (!SCPI_ParamNumber (context, &Sval, false)) {
+    int32_t val;
+    if (!SCPI_ParamInt (context, &val, true)) {
         return SCPI_RES_ERR;
     }
-    unsigned val = Sval.value;
     if (val) {
         gpio_set_pin_high (GPIO_SYNTH_MRST);
     } else {
@@ -117,13 +109,13 @@ scpi_result_t TEST_SETMRST (scpi_t *context)
 
 scpi_result_t TEST_SPI (scpi_t *context)
 {
-    scpi_number_t Sval;
-    if (!SCPI_ParamNumber (context, &Sval, false)) {
+    int32_t val;
+    if (!SCPI_ParamInt (context, &val, true)) {
         return SCPI_RES_ERR;
     }
-    uint8_t val = Sval.value;
-    printf ("Transmitting value %02x\r\n", val);
-    spi_write (SPI_MASTER_BASE, val, 0, 0);
+    uint8_t val_byte = (uint8_t) val;
+    printf ("Transmitting value %02x\r\n", val_byte);
+    spi_write (SPI_MASTER_BASE, val_byte, 0, 0);
     return SCPI_RES_OK;   
 }
 
@@ -143,15 +135,16 @@ scpi_result_t TEST_INCK (scpi_t *context)
 
 scpi_result_t TEST_FREQ (scpi_t *context)
 {
-    scpi_number_t SNchannel, SNfreq;
-    if (!SCPI_ParamNumber (context, &SNchannel, false)) {
+    int32_t ch;
+    scpi_number_t freq;
+    if (!SCPI_ParamInt (context, &ch, true)) {
         return SCPI_RES_ERR;
     }
-    if (!SCPI_ParamNumber (context, &SNfreq, false)) {
+    if (!SCPI_ParamNumber (context, &freq, true)) {
         return SCPI_RES_ERR;
     }
-    unsigned ch = SNchannel.value;
-    printf ("Setting frequency %d to %f\r\n", ch, SNfreq.value);
-    synth_set_frequency (ch, SNfreq.value);
+    unsigned ch_uns = (unsigned) ch;
+    printf ("Setting frequency %d to %f\r\n", ch_uns, freq.value);
+    synth_set_frequency (ch_uns, freq.value);
     return SCPI_RES_OK;   
 }

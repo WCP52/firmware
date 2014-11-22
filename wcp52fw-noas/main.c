@@ -169,7 +169,7 @@ void cmd_process (void)
 			break;
 
 		case '3':
-            synth_set_frequency (1, 1000000.);
+            synth_set_frequency (1, atof (arg));
 			break;
 	}
 }

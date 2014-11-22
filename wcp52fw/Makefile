@@ -1,5 +1,5 @@
 all:
-	@${MAKE} -f ASF/sam/utils/make/Makefile.sam.in all
+	@${MAKE} -f src/ASF/sam/utils/make/Makefile.sam.in all
 
 clean:
 	find -name '*.o' -delete
@@ -14,7 +14,7 @@ clean:
 	rm -f wcp52fw*.sym
 
 %: force
-	@${MAKE} -f ASF/sam/utils/make/Makefile.sam.in $@
+	@${MAKE} -f src/ASF/sam/utils/make/Makefile.sam.in $@
 
 force: ;
 

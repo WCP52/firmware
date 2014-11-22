@@ -37,7 +37,7 @@
 #
 
 # Path to top level ASF directory relative to this project directory.
-PRJ_PATH = ASF
+PRJ_PATH = src/ASF
 
 # Target CPU architecture: cortex-m3, cortex-m4
 ARCH = cortex-m4
@@ -51,7 +51,7 @@ TARGET_FLASH = wcp52fw_flash.elf
 TARGET_SRAM = wcp52fw_sram.elf
 
 # List of C source files.
-CSRCS = $(shell find -type f -name '*.c') \
+CSRCS = $(shell find src -type f -name '*.c') \
 		$(shell find ../scpi-parser/libscpi/src -name '*.c') \
 
 # List of assembler source files.
@@ -59,36 +59,36 @@ ASSRCS =
 
 # List of include paths.
 INC_PATH = \
-		../config \
+		../../config \
 		$(realpath ../scpi-parser/libscpi/inc) \
-       common/boards                                      \
-       common/services/clock                              \
-       common/services/gpio                               \
-       common/services/ioport                             \
-       common/services/serial                             \
-       common/services/serial/sam_uart                    \
-	   common/services/spi \
-	   common/services/delay \
-       common/utils                                       \
-       common/utils/stdio/stdio_serial                    \
-       sam/applications/getting-started                   \
-       sam/applications/getting-started/sam4s16c_sam4s_xplained \
-       sam/boards                                         \
-       sam/boards/sam4s_xplained                          \
-	   sam/drivers/adc \
-       sam/drivers/pio                                    \
-       sam/drivers/pmc                                    \
-       sam/drivers/spi                                    \
-       sam/drivers/uart                                   \
-       sam/drivers/usart                                  \
-       sam/utils                                          \
-       sam/utils/cmsis/sam4s/include                      \
-       sam/utils/cmsis/sam4s/source/templates             \
-       sam/utils/header_files                             \
-       sam/utils/preprocessor                             \
-       thirdparty/CMSIS/Include                           \
-       thirdparty/CMSIS/Lib/GCC \
-       sam/applications/getting-started/sam4s16c_sam4s_xplained/gcc
+		common/boards                                      \
+		common/services/clock                              \
+		common/services/gpio                               \
+		common/services/ioport                             \
+		common/services/serial                             \
+		common/services/serial/sam_uart                    \
+		common/services/spi \
+		common/services/delay \
+		common/utils                                       \
+		common/utils/stdio/stdio_serial                    \
+		sam/applications/getting-started                   \
+		sam/applications/getting-started/sam4s16c_sam4s_xplained \
+		sam/boards                                         \
+		sam/boards/sam4s_xplained                          \
+		sam/drivers/adc \
+		sam/drivers/pio                                    \
+		sam/drivers/pmc                                    \
+		sam/drivers/spi                                    \
+		sam/drivers/uart                                   \
+		sam/drivers/usart                                  \
+		sam/utils                                          \
+		sam/utils/cmsis/sam4s/include                      \
+		sam/utils/cmsis/sam4s/source/templates             \
+		sam/utils/header_files                             \
+		sam/utils/preprocessor                             \
+		thirdparty/CMSIS/Include                           \
+		thirdparty/CMSIS/Lib/GCC \
+		sam/applications/getting-started/sam4s16c_sam4s_xplained/gcc
 
 # Additional search paths for libraries.
 LIB_PATH =  \

@@ -1,0 +1,4 @@
+#!/usr/bin/zsh
+
+# Start JLinkGDBServer first
+clewn -gc arm-none-eabi-gdb -ga 'wcp52fw_flash.elf -ex "target remote localhost:2331"'

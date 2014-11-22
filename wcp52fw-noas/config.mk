@@ -132,11 +132,11 @@ DEBUG_SCRIPT_FLASH = sam4s_xplained_flash.gdb
 DEBUG_SCRIPT_SRAM  = sam4s_xplained_sram.gdb
 
 # Project type parameter: all, sram or flash
-PROJECT_TYPE        = all
+PROJECT_TYPE        = flash
 
 # Additional options for debugging. By default the common Makefile.in will
 # add -g3.
-DBGFLAGS = 
+DBGFLAGS = -ggdb
 
 # Application optimization used during compilation and linking:
 # -O0, -O1, -O2, -O3 or -Os

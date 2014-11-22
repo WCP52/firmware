@@ -8,8 +8,9 @@
 #include "asf.h"
 #include "conf_board.h"
 #include "synth.h"
+#include "util.h"
 
-scpi_result_t TEST_LEDON (scpi_t * context) {
+scpi_result_t TEST_LED (scpi_t *context) {
     int32_t led_number;
 
     if (!SCPI_ParamInt(context, &led_number, true)) {
@@ -17,12 +18,14 @@ scpi_result_t TEST_LEDON (scpi_t * context) {
         return SCPI_RES_ERR;
     }
 
+    int value = ! SCPI_CmdId (context);
+
     switch (led_number) {
         case 0:
-            gpio_set_pin_low (LED0_GPIO);
+            util_set_pin (LED0_GPIO, value);
             return SCPI_RES_OK;
         case 1:
-            gpio_set_pin_low (LED1_GPIO);
+            util_set_pin (LED1_GPIO, value);
             return SCPI_RES_OK;
         default:
             SCPI_ErrorPush (context, SCPI_ERROR_ILLEGAL_PARAMETER_VALUE);
@@ -30,80 +33,34 @@ scpi_result_t TEST_LEDON (scpi_t * context) {
     }
 }
 
-scpi_result_t TEST_LEDOFF (scpi_t * context) {
-    int32_t led_number;
-
-    if (!SCPI_ParamInt(context, &led_number, true)) {
-        /* Missing parameter error is already registered */
+scpi_result_t TEST_SET (scpi_t *context)
+{
+    int32_t val;
+    if (!SCPI_ParamInt (context, &val, true)) {
         return SCPI_RES_ERR;
     }
 
-    switch (led_number) {
+    /* Determine which command was called */
+    int32_t cmdid = SCPI_CmdId (context);
+    int32_t pin;
+    switch (cmdid) {
         case 0:
-            gpio_set_pin_high (LED0_GPIO);
-            return SCPI_RES_OK;
+            pin = GPIO_SYNTH_nCS;
+            break;
         case 1:
-            gpio_set_pin_high (LED1_GPIO);
-            return SCPI_RES_OK;
+            pin = GPIO_SYNTH_IOUPDATE;
+            break;
+        case 2:
+            pin = GPIO_SYNTH_PWRDN;
+            break;
+        case 3:
+            pin = GPIO_SYNTH_MRST;
+            break;
         default:
-            SCPI_ErrorPush (context, SCPI_ERROR_ILLEGAL_PARAMETER_VALUE);
-            return SCPI_RES_ERR;
+            pin = LED0_GPIO;
     }
-}
 
-scpi_result_t TEST_SETNCS (scpi_t *context)
-{
-    int32_t val;
-    if (!SCPI_ParamInt (context, &val, true)) {
-        return SCPI_RES_ERR;
-    }
-    if (val) {
-        gpio_set_pin_high (GPIO_SYNTH_nCS);
-    } else {
-        gpio_set_pin_low (GPIO_SYNTH_nCS);
-    }
-     return SCPI_RES_OK;   
-}
-
-scpi_result_t TEST_SETIOUP (scpi_t *context)
-{
-    int32_t val;
-    if (!SCPI_ParamInt (context, &val, true)) {
-        return SCPI_RES_ERR;
-    }
-    if (val) {
-        gpio_set_pin_high (GPIO_SYNTH_IOUPDATE);
-    } else {
-        gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
-    }
-     return SCPI_RES_OK;   
-}
-
-scpi_result_t TEST_SETPWRDN (scpi_t *context)
-{
-    int32_t val;
-    if (!SCPI_ParamInt (context, &val, true)) {
-        return SCPI_RES_ERR;
-    }
-    if (val) {
-        gpio_set_pin_high (GPIO_SYNTH_PWRDN);
-    } else {
-        gpio_set_pin_low (GPIO_SYNTH_PWRDN);
-    }
-     return SCPI_RES_OK;   
-}
-
-scpi_result_t TEST_SETMRST (scpi_t *context)
-{
-    int32_t val;
-    if (!SCPI_ParamInt (context, &val, true)) {
-        return SCPI_RES_ERR;
-    }
-    if (val) {
-        gpio_set_pin_high (GPIO_SYNTH_MRST);
-    } else {
-        gpio_set_pin_low (GPIO_SYNTH_MRST);
-    }
+    util_set_pin (pin, val);
      return SCPI_RES_OK;   
 }
 

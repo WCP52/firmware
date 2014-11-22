@@ -42,7 +42,6 @@ scpi_result_t SCPI_Test(scpi_t * context) {
 scpi_result_t SCPI_Reset(scpi_t * context) {
     (void) context;
 
-    /* Write the reset password */
     /* Here, we are going to reset the entire chip. This requires writing to
      * the RSTC (reset controller) control registers. */
 

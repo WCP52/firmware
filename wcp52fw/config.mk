@@ -51,7 +51,8 @@ TARGET_FLASH = wcp52fw_flash.elf
 TARGET_SRAM = wcp52fw_sram.elf
 
 # List of C source files.
-CSRCS = $(shell find -type f -name '*.c')
+CSRCS = $(shell find -type f -name '*.c') \
+		$(shell find ../scpi-parser/libscpi/src -name '*.c') \
 
 # List of assembler source files.
 ASSRCS = 
@@ -59,6 +60,7 @@ ASSRCS =
 # List of include paths.
 INC_PATH = \
 		../config \
+		$(realpath ../scpi-parser/libscpi/inc) \
        common/boards                                      \
        common/services/clock                              \
        common/services/gpio                               \
@@ -126,7 +128,8 @@ ARFLAGS =
 ASFLAGS = 
 
 # Extra flags to use when compiling.
-CFLAGS = --specs=nosys.specs -Wextra -Werror -fmax-errors=3 -fdiagnostics-show-option
+CFLAGS = --specs=nosys.specs -Wextra -Werror -fmax-errors=3 -fdiagnostics-show-option \
+		-iquote $(realpath ../scpi-parser/libscpi/inc) \
 
 # Extra flags to use when preprocessing.
 #

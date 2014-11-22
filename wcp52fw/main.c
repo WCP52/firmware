@@ -5,6 +5,8 @@
  *
  */
 
+#include "scpi/scpi.h"
+#include "scpi-def.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -239,7 +241,26 @@ int main(void)
         }
     }
 
+    SCPI_Init (&scpi_context);
+
+    const size_t SMBUFFER_SIZE = 10;
+    char smbuffer[10];
     for (;;) {
-        cmd_process ();
+        /* Get into smbuffer until either full, or a \r or \n */
+        size_t i;
+        for (i = 0; i < SMBUFFER_SIZE - 1; ++i) {
+            int ch = getchar ();
+            if (ch == '\r' || ch == '\n') {
+                smbuffer[i] = ch;
+                ++i;
+                break;
+            }
+            else if (ch > 0 && ch <= 255) {
+                smbuffer[i] = ch;
+            }
+        }
+        /* Terminate! */
+        smbuffer[i] = 0;
+        SCPI_Input (&scpi_context, smbuffer, strlen (smbuffer));
     }
 }

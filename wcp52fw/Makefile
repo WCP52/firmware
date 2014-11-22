@@ -4,6 +4,8 @@ all:
 clean:
 	find -name '*.o' -delete
 	find -name '*.d' -delete
+	find ../scpi-parser/libscpi/src -name '*.o' -delete
+	find ../scpi-parser/libscpi/src -name '*.d' -delete
 	rm -f wcp52fw*.bin
 	rm -f wcp52fw*.elf
 	rm -f wcp52fw*.hex

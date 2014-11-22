@@ -40,126 +40,54 @@
 #include <string.h>
 #include "scpi/scpi.h"
 #include "scpi-def.h"
+#include "asf.h"
 
-scpi_result_t DMM_MeasureVoltageDcQ(scpi_t * context) {
-    scpi_number_t param1, param2;
-    char bf[15];
-    fprintf(stderr, "meas:volt:dc\r\n"); // debug command name   
+scpi_result_t TEST_LEDON (scpi_t * context);
+scpi_result_t TEST_LEDON (scpi_t * context) {
+    scpi_number_t led_number;
 
-    // read first parameter if present
-    if (!SCPI_ParamNumber(context, &param1, false)) {
-        // do something, if parameter not present
-    }
-
-    // read second paraeter if present
-    if (!SCPI_ParamNumber(context, &param2, false)) {
-        // do something, if parameter not present
-    }
-
-    
-    SCPI_NumberToStr(context, &param1, bf, 15);
-    fprintf(stderr, "\tP1=%s\r\n", bf);
-
-    
-    SCPI_NumberToStr(context, &param2, bf, 15);
-    fprintf(stderr, "\tP2=%s\r\n", bf);
-
-    SCPI_ResultDouble(context, 0);
-    
-    return SCPI_RES_OK;
-}
-
-
-scpi_result_t DMM_MeasureVoltageAcQ(scpi_t * context) {
-    scpi_number_t param1, param2;
-    char bf[15];
-    fprintf(stderr, "meas:volt:ac\r\n"); // debug command name   
-
-    // read first parameter if present
-    if (!SCPI_ParamNumber(context, &param1, false)) {
-        // do something, if parameter not present
-    }
-
-    // read second paraeter if present
-    if (!SCPI_ParamNumber(context, &param2, false)) {
-        // do something, if parameter not present
-    }
-
-    
-    SCPI_NumberToStr(context, &param1, bf, 15);
-    fprintf(stderr, "\tP1=%s\r\n", bf);
-
-    
-    SCPI_NumberToStr(context, &param2, bf, 15);
-    fprintf(stderr, "\tP2=%s\r\n", bf);
-
-    SCPI_ResultDouble(context, 0);
-    
-    return SCPI_RES_OK;
-}
-
-scpi_result_t DMM_ConfigureVoltageDc(scpi_t * context) {
-    double param1, param2;
-    fprintf(stderr, "conf:volt:dc\r\n"); // debug command name   
-
-    // read first parameter if present
-    if (!SCPI_ParamDouble(context, &param1, true)) {
+    if (!SCPI_ParamNumber(context, &led_number, true)) {
+        /* Missing parameter error is already registered */
         return SCPI_RES_ERR;
     }
 
-    // read second paraeter if present
-    if (!SCPI_ParamDouble(context, &param2, false)) {
-        // do something, if parameter not present
+    unsigned lednum = led_number.value;
+
+    switch (lednum) {
+        case 0:
+            gpio_set_pin_low (LED0_GPIO);
+            return SCPI_RES_OK;
+        case 1:
+            gpio_set_pin_low (LED1_GPIO);
+            return SCPI_RES_OK;
+        default:
+            SCPI_ErrorPush (context, SCPI_ERROR_ILLEGAL_PARAMETER_VALUE);
+            return SCPI_RES_ERR;
     }
-
-    fprintf(stderr, "\tP1=%lf\r\n", param1);
-    fprintf(stderr, "\tP2=%lf\r\n", param2);
-
-    return SCPI_RES_OK;
 }
 
-scpi_result_t TEST_Bool(scpi_t * context) {
-    scpi_bool_t param1;
-    fprintf(stderr, "TEST:BOOL\r\n"); // debug command name   
+scpi_result_t TEST_LEDOFF (scpi_t * context);
+scpi_result_t TEST_LEDOFF (scpi_t * context) {
+    scpi_number_t led_number;
 
-    // read first parameter if present
-    if (!SCPI_ParamBool(context, &param1, true)) {
+    if (!SCPI_ParamNumber(context, &led_number, false)) {
+        /* Missing parameter error is already registered */
         return SCPI_RES_ERR;
     }
 
-    fprintf(stderr, "\tP1=%d\r\n", param1);
+    unsigned lednum = led_number.value;
 
-    return SCPI_RES_OK;
-}
-
-const char * trigger_source[] = {
-    "BUS",
-    "IMMediate",
-    "EXTernal",
-    NULL /* termination of option list */
-};
-
-
-scpi_result_t TEST_ChoiceQ(scpi_t * context) {
-
-    int32_t param;
-    
-    if (!SCPI_ParamChoice(context, trigger_source, &param, true)) {
-        return SCPI_RES_ERR;
+    switch (lednum) {
+        case 0:
+            gpio_set_pin_high (LED0_GPIO);
+            return SCPI_RES_OK;
+        case 1:
+            gpio_set_pin_high (LED1_GPIO);
+            return SCPI_RES_OK;
+        default:
+            SCPI_ErrorPush (context, SCPI_ERROR_ILLEGAL_PARAMETER_VALUE);
+            return SCPI_RES_ERR;
     }
-    
-    fprintf(stderr, "\tP1=%s (%" PRId32 ")\r\n", trigger_source[param], param);
-    
-    SCPI_ResultInt(context, param);
-
-    return SCPI_RES_OK;
-}
-
-scpi_result_t TEST_Numbers(scpi_t * context) {
-
-    fprintf(stderr, "RAW CMD %.*s\r\n", (int)context->paramlist.cmd_raw.length, context->paramlist.cmd_raw.data);
-
-    return SCPI_RES_OK;
 }
 
 static const scpi_command_t scpi_commands[] = {
@@ -196,23 +124,9 @@ static const scpi_command_t scpi_commands[] = {
 
     {.pattern = "STATus:PRESet", .callback = SCPI_StatusPreset,},
 
-    /* DMM */
-    {.pattern = "MEASure:VOLTage:DC?", .callback = DMM_MeasureVoltageDcQ,},
-    {.pattern = "CONFigure:VOLTage:DC", .callback = DMM_ConfigureVoltageDc,},
-    {.pattern = "MEASure:VOLTage:DC:RATio?", .callback = SCPI_StubQ,},
-    {.pattern = "MEASure:VOLTage:AC?", .callback = DMM_MeasureVoltageAcQ,},
-    {.pattern = "MEASure:CURRent:DC?", .callback = SCPI_StubQ,},
-    {.pattern = "MEASure:CURRent:AC?", .callback = SCPI_StubQ,},
-    {.pattern = "MEASure:RESistance?", .callback = SCPI_StubQ,},
-    {.pattern = "MEASure:FRESistance?", .callback = SCPI_StubQ,},
-    {.pattern = "MEASure:FREQuency?", .callback = SCPI_StubQ,},
-    {.pattern = "MEASure:PERiod?", .callback = SCPI_StubQ,},
-    
-    {.pattern = "SYSTem:COMMunication:TCPIP:CONTROL?", .callback = SCPI_SystemCommTcpipControlQ,},
-
-    {.pattern = "TEST:BOOL", .callback = TEST_Bool,},
-    {.pattern = "TEST:CHOice?", .callback = TEST_ChoiceQ,},
-    {.pattern = "TEST#:NUMbers#", .callback = TEST_Numbers,},
+    /* Test commands */
+    {.pattern = "Test:LEDON", .callback = TEST_LEDON,},
+    {.pattern = "Test:LEDOFF", .callback = TEST_LEDOFF,},
 
     SCPI_CMD_LIST_END
 };

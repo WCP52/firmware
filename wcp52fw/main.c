@@ -39,28 +39,6 @@ static void configure_console(void)
 }
 
 /**
- * \brief Set LED on or off
- */
-void do_cmd_led (char *arg, int on);
-void do_cmd_led (char *arg, int on)
-{
-    int led = atoi (arg);
-    if (led == 0) {
-        if (on) {
-            gpio_set_pin_high (LED0_GPIO);
-        } else {
-            gpio_set_pin_low (LED0_GPIO);
-        }
-    } else if (led == 1) {
-        if (on) {
-            gpio_set_pin_high (LED1_GPIO);
-            } else {
-            gpio_set_pin_low (LED1_GPIO);
-        }
-    }
-}
-
-/**
  * \brief Send data
  */
 void do_cmd_spi (char *arg);
@@ -141,21 +119,6 @@ void cmd_process (void)
     
     /* Branch! */
     switch (cmd) {
-        case 'e':
-        case 'E':
-            /* Echo */
-            printf ("%s\r\n", arg);
-            break;
-        
-        case 'L':
-            /* Led on */
-            do_cmd_led (arg, 1);
-            break;
-        case 'l':
-            /* Led off */
-            do_cmd_led (arg, 0);
-            break;
-            
         case 's':
             /* SPI transmit */
             do_cmd_spi (arg);

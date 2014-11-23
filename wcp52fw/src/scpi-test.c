@@ -10,56 +10,48 @@
 #include "synth.h"
 #include "util.h"
 
-scpi_result_t TEST_LED (scpi_t *context) {
-    int32_t led_number;
+/* List of pins we can set or clear */
+static const char *SETCLR_NAMES[] = {
+    "NCS", "IOUPdate", "PWRDN", "MRST", "LED0", "LED1", "LIST", NULL
+};
 
-    if (!SCPI_ParamInt(context, &led_number, true)) {
-        /* Missing parameter error is already registered */
-        return SCPI_RES_ERR;
-    }
+/* Polarity of each one (1 for invert, 2 for "this is LIST") */
+static const uint8_t SETCLR_POL[] = {
+    0, 0, 0, 0, 1, 1, 2 };
 
-    int value = SCPI_IsCmd (context, "TEST:LEDON") ? 0 : 1;
+/* List of the actual pins */
+static const int32_t SETCLR_PINS[] = {
+    GPIO_SYNTH_nCS, GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_PWRDN,
+    GPIO_SYNTH_MRST, LED0_GPIO, LED1_GPIO };
 
-    switch (led_number) {
-        case 0:
-            util_set_pin (LED0_GPIO, value);
-            return SCPI_RES_OK;
-        case 1:
-            util_set_pin (LED1_GPIO, value);
-            return SCPI_RES_OK;
-        default:
-            SCPI_ErrorPush (context, SCPI_ERROR_ILLEGAL_PARAMETER_VALUE);
-            return SCPI_RES_ERR;
-    }
-}
-
-scpi_result_t TEST_SET (scpi_t *context)
+scpi_result_t TEST_SETCLR (scpi_t *context)
 {
-    int32_t val;
-    if (!SCPI_ParamInt (context, &val, true)) {
+    int32_t choice;
+
+    if (!SCPI_ParamChoice (context, SETCLR_NAMES, &choice, true)) {
         return SCPI_RES_ERR;
     }
 
-    int32_t pin;
-
-    /* Determine which command was called */
-    if (SCPI_IsCmd (context, "TEST:SETNCS")) {
-        pin = GPIO_SYNTH_nCS;
-
-    } else if (SCPI_IsCmd (context, "TEST:SETIOUP")) {
-        pin = GPIO_SYNTH_IOUPDATE;
-
-    } else if (SCPI_IsCmd (context, "TEST:SETPWRDN")) {
-        pin = GPIO_SYNTH_PWRDN;
-
-    } else if (SCPI_IsCmd (context, "TEST:SETMRST")) {
-        pin = GPIO_SYNTH_MRST;
-
-    } else {
-        pin = LED0_GPIO;
+    /* List names */
+    if (SETCLR_POL[choice] == 2) {
+        /* List! */
+        size_t i;
+        for (i = 0; SETCLR_NAMES[i]; ++i) {
+            if (SETCLR_POL[i] != 2) {
+                if (i) {
+                    fputs (", ", stdout);
+                }
+                fputs (SETCLR_NAMES[i], stdout);
+            }
+        }
+        fputs ("\r\n", stdout);
+        return SCPI_RES_OK;
     }
 
-    util_set_pin (pin, val);
+    uint8_t value = SCPI_IsCmd (context, "TEST:SET") ? 1 : 0;
+    value ^= SETCLR_POL[choice];
+
+    util_set_pin (SETCLR_PINS[choice], value);
     return SCPI_RES_OK;   
 }
 

@@ -10,13 +10,18 @@ uint8_t CFR[CFR_LEN];
 uint8_t CFTW0[CFTW_LEN];
 uint8_t CFTW1[CFTW_LEN];
 
+/* Toggle the SYNCIO pin to reset the IO system */
+static void syncio (void)
+{
+    gpio_set_pin_high (GPIO_SYNTH_SYNCIO);
+    gpio_set_pin_low (GPIO_SYNTH_SYNCIO);
+}
+
 /* Toggle the IO_UPDATE pin and trigger the AD9958 to load data into its
  * registers. */
 static void io_update (void)
 {
-	delay_us (1);
 	gpio_set_pin_high (GPIO_SYNTH_IOUPDATE);
-	delay_us (1);
 	gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
 }
 
@@ -35,11 +40,14 @@ static void spi_wait (void)
  */
 static void send_control_register (uint8_t addr, const uint8_t *data, size_t data_length)
 {
+    gpio_set_pin_low (GPIO_SYNTH_nCS);
+    syncio ();
     spi_write (SPI_MASTER_BASE, addr, 0, 0);
     for (size_t i = 0; i < data_length; ++i) {
         spi_write (SPI_MASTER_BASE, data[i], 0, 0);
     }
     spi_wait ();
+    gpio_set_pin_high (GPIO_SYNTH_nCS);
     io_update ();
 }
 
@@ -55,6 +63,9 @@ static void send_channel_register (uint8_t addr, const uint8_t *data,
 {
     if (channel_num > 1) return;
 
+    gpio_set_pin_low (GPIO_SYNTH_nCS);
+    syncio ();
+
     /* First, set the proper 'channel enable' bit */
     spi_write (SPI_MASTER_BASE, 0x00, 0, 0);
     spi_write (SPI_MASTER_BASE, channel_num ? 0x42 : 0x82, 0, 0);
@@ -66,6 +77,7 @@ static void send_channel_register (uint8_t addr, const uint8_t *data,
     }
 
     spi_wait ();
+    gpio_set_pin_high (GPIO_SYNTH_nCS);
     io_update ();
 }
 
@@ -76,17 +88,21 @@ void synth_initialize_interface (void)
 	gpio_set_pin_low (GPIO_SYNTH_nCS);
 	gpio_set_pin_low (GPIO_SYNTH_IOUPDATE);
 
+    /* Make sure to delay after PWRDN goes low.
+     * No idea how long! I can't find it in the datasheet... */
+    delay_ms (50);
+
     /* Perform a master reset */
 	gpio_set_pin_high (GPIO_SYNTH_MRST);
-	delay_us (1);
 	gpio_set_pin_low (GPIO_SYNTH_MRST);
-	delay_us (1);
 
     /* Configure standard SPI mode */
+    syncio ();
 	spi_write (SPI_MASTER_BASE, 0x00, 0, 0);
 	spi_write (SPI_MASTER_BASE, 0x02, 0, 0);
 
     spi_wait ();
+    gpio_set_pin_high (GPIO_SYNTH_nCS);
     io_update ();
 }
 

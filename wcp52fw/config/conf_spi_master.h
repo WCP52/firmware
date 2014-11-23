@@ -66,10 +66,10 @@
 #define SPI_CHIP_PCS spi_get_pcs(SPI_CHIP_SEL)
 
 /* Clock polarity. */
-#define SPI_CLK_POLARITY 0
+#define SPI_CLK_POLARITY 1
 
 /* Clock phase. */
-#define SPI_CLK_PHASE 0
+#define SPI_CLK_PHASE 1
 
 /* Delay before SPCK. */
 #define SPI_DLYBS 0x40

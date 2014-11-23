@@ -73,6 +73,7 @@ void pins_init (void)
     gpio_configure_pin (GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_IOUPDATE_F);
     gpio_configure_pin (GPIO_SYNTH_PWRDN, GPIO_SYNTH_PWRDN_F);
     gpio_configure_pin (GPIO_SYNTH_MRST, GPIO_SYNTH_MRST_F);
+    gpio_configure_pin (GPIO_SYNTH_SYNCIO, GPIO_SYNTH_SYNCIO_F);
 }
 
 /**

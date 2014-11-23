@@ -8,7 +8,7 @@
 
 #include "asf.h"
 
-static inline void util_set_pin (uint32_t pin, int value)
+static inline void util_set_pin (uint32_t pin, int_fast8_t value)
 {
     if (value) {
         gpio_set_pin_high (pin);

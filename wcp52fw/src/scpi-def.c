@@ -76,12 +76,12 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "STATus:PRESet", .callback = SCPI_StatusPreset,},
 
     /* Test commands */
-    {.pattern = "Test:LEDON", .callback = TEST_LED, .cmd_id = 1,},
-    {.pattern = "Test:LEDOFF", .callback = TEST_LED, .cmd_id = 0,},
-    {.pattern = "Test:SETNCS", .callback = TEST_SET, .cmd_id = 0,},
-    {.pattern = "Test:SETIOUP", .callback = TEST_SET, .cmd_id = 1,},
-    {.pattern = "Test:SETPWRDN", .callback = TEST_SET, .cmd_id = 2,},
-    {.pattern = "Test:SETMRST", .callback = TEST_SET, .cmd_id = 3,},
+    {.pattern = "Test:LEDON", .callback = TEST_LED,},
+    {.pattern = "Test:LEDOFF", .callback = TEST_LED,},
+    {.pattern = "Test:SETNCS", .callback = TEST_SET,},
+    {.pattern = "Test:SETIOUP", .callback = TEST_SET,},
+    {.pattern = "Test:SETPWRDN", .callback = TEST_SET,},
+    {.pattern = "Test:SETMRST", .callback = TEST_SET,},
     {.pattern = "Test:SPI", .callback = TEST_SPI,},
     {.pattern = "Test:INIF", .callback = TEST_INIF,}, /* Init interface */
     {.pattern = "Test:INCK", .callback = TEST_INCK,}, /* Init clock */

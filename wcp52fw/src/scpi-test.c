@@ -18,7 +18,7 @@ scpi_result_t TEST_LED (scpi_t *context) {
         return SCPI_RES_ERR;
     }
 
-    int value = ! SCPI_CmdId (context);
+    int value = SCPI_IsCmd (context, "TEST:LEDON") ? 0 : 1;
 
     switch (led_number) {
         case 0:
@@ -40,28 +40,27 @@ scpi_result_t TEST_SET (scpi_t *context)
         return SCPI_RES_ERR;
     }
 
-    /* Determine which command was called */
-    int32_t cmdid = SCPI_CmdId (context);
     int32_t pin;
-    switch (cmdid) {
-        case 0:
-            pin = GPIO_SYNTH_nCS;
-            break;
-        case 1:
-            pin = GPIO_SYNTH_IOUPDATE;
-            break;
-        case 2:
-            pin = GPIO_SYNTH_PWRDN;
-            break;
-        case 3:
-            pin = GPIO_SYNTH_MRST;
-            break;
-        default:
-            pin = LED0_GPIO;
+
+    /* Determine which command was called */
+    if (SCPI_IsCmd (context, "TEST:SETNCS")) {
+        pin = GPIO_SYNTH_nCS;
+
+    } else if (SCPI_IsCmd (context, "TEST:SETIOUP")) {
+        pin = GPIO_SYNTH_IOUPDATE;
+
+    } else if (SCPI_IsCmd (context, "TEST:SETPWRDN")) {
+        pin = GPIO_SYNTH_PWRDN;
+
+    } else if (SCPI_IsCmd (context, "TEST:SETMRST")) {
+        pin = GPIO_SYNTH_MRST;
+
+    } else {
+        pin = LED0_GPIO;
     }
 
     util_set_pin (pin, val);
-     return SCPI_RES_OK;   
+    return SCPI_RES_OK;   
 }
 
 scpi_result_t TEST_SPI (scpi_t *context)

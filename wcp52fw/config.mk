@@ -59,7 +59,7 @@ ASSRCS =
 
 # List of include paths.
 INC_PATH = \
-		../../config \
+		../config \
 		$(realpath ../scpi-parser/libscpi/inc) \
 		common/boards                                      \
 		common/services/clock                              \

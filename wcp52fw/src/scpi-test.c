@@ -12,17 +12,17 @@
 
 /* List of pins we can set or clear */
 static const char *SETCLR_NAMES[] = {
-    "NCS", "IOUPdate", "PWRDN", "MRST", "LED0", "LED1", "LIST", NULL
+    "NCS", "IOUPdate", "PWRDN", "MRST", "SYNCIO", "LED0", "LED1", "LIST", NULL
 };
 
 /* Polarity of each one (1 for invert, 2 for "this is LIST") */
 static const uint8_t SETCLR_POL[] = {
-    0, 0, 0, 0, 1, 1, 2 };
+    0, 0, 0, 0, 0, 1, 1, 2 };
 
 /* List of the actual pins */
 static const int32_t SETCLR_PINS[] = {
     GPIO_SYNTH_nCS, GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_PWRDN,
-    GPIO_SYNTH_MRST, LED0_GPIO, LED1_GPIO };
+    GPIO_SYNTH_MRST, GPIO_SYNTH_SYNCIO, LED0_GPIO, LED1_GPIO };
 
 scpi_result_t TEST_SETCLR (scpi_t *context)
 {

@@ -66,7 +66,7 @@
 #define SPI_CHIP_PCS spi_get_pcs(SPI_CHIP_SEL)
 
 /* Clock polarity. */
-#define SPI_CLK_POLARITY 1
+#define SPI_CLK_POLARITY 0
 
 /* Clock phase. */
 #define SPI_CLK_PHASE 1

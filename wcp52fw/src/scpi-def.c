@@ -97,11 +97,8 @@ static scpi_interface_t scpi_interface = {
 
 #define SCPI_INPUT_BUFFER_LENGTH 256
 static char scpi_input_buffer[SCPI_INPUT_BUFFER_LENGTH];
-
 static scpi_reg_val_t scpi_regs[SCPI_REG_COUNT];
-
-
-scpi_t scpi_context = {
+scpi_t G_SCPI_CONTEXT = {
     .cmdlist = scpi_commands,
     .buffer = {
         .length = SCPI_INPUT_BUFFER_LENGTH,

@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Miscellaneous utilities
+ * Miscellaneous utilities
  */
 
 #include "util.h"

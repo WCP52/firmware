@@ -1,8 +1,6 @@
 /**
  * \file
- *
- * \brief WCP52 gain/phase main loop
- *
+ * Main loop and initializers.
  */
 
 #include "scpi/scpi.h"
@@ -17,14 +15,10 @@
 
 #include "synth.h"
 
-void SysTick_Handler(void)
-{
-}
-
 /**
- * \brief Configure UART console.
+ * Initialize the UART stdio console.
  */
-static void configure_console(void)
+static void console_init(void)
 {
     const usart_serial_options_t uart_serial_options = {
         .baudrate = CONF_UART_BAUDRATE,
@@ -33,16 +27,16 @@ static void configure_console(void)
         .stopbits = false
     };
 
-    /* Configure console UART. */
+    // Configure console UART.
     sysclk_enable_peripheral_clock(CONSOLE_UART_ID);
     stdio_serial_init(CONF_UART, &uart_serial_options);
 }
 
 
 /**
- * \brief Initialize SPI as master.
+ * Initialize the SPI controller.
  */
-static void spi_master_initialize(void)
+static void spi_init(void)
 {
     /* Configure an SPI peripheral. */
     spi_enable_clock(SPI_MASTER_BASE);
@@ -65,41 +59,33 @@ static void spi_master_initialize(void)
 
 
 
-/* GPIO pins for synth control */
-void pins_init (void);
-void pins_init (void)
+/**
+ * Initialize the GPIO pins that are not handled by board_init().
+ */
+static void pins_init(void)
 {
-    gpio_configure_pin (GPIO_SYNTH_nCS, GPIO_SYNTH_nCS_F);
-    gpio_configure_pin (GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_IOUPDATE_F);
-    gpio_configure_pin (GPIO_SYNTH_PWRDN, GPIO_SYNTH_PWRDN_F);
-    gpio_configure_pin (GPIO_SYNTH_MRST, GPIO_SYNTH_MRST_F);
-    gpio_configure_pin (GPIO_SYNTH_SYNCIO, GPIO_SYNTH_SYNCIO_F);
+    gpio_configure_pin(GPIO_SYNTH_nCS, GPIO_SYNTH_nCS_F);
+    gpio_configure_pin(GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_IOUPDATE_F);
+    gpio_configure_pin(GPIO_SYNTH_PWRDN, GPIO_SYNTH_PWRDN_F);
+    gpio_configure_pin(GPIO_SYNTH_MRST, GPIO_SYNTH_MRST_F);
+    gpio_configure_pin(GPIO_SYNTH_SYNCIO, GPIO_SYNTH_SYNCIO_F);
 }
 
 /**
- * \brief main Application entry point.
+ * Main function.
  *
  * \return Unused (ANSI-C compatibility).
  */
 int main(void)
 {
-    /* Initialize the SAM system. */
+    // Initialize all used peripherals.
     sysclk_init();
     board_init();
-    pins_init ();
-
-    configure_console();
+    pins_init();
+    console_init();
+    spi_init();
     
-    spi_master_initialize ();
-    
-    /* 10 ms timer */
-    if (SysTick_Config(sysclk_get_cpu_hz() / 100)) {
-        for (;;) {
-            puts("-F- Systick configuration error\r");
-        }
-    }
-
-    SCPI_Init (&scpi_context);
+    SCPI_Init(&G_SCPI_CONTEXT);
 
     puts("**Initialization successful\r");
 
@@ -109,7 +95,7 @@ int main(void)
         /* Get into smbuffer until either full, or a \r or \n */
         size_t i;
         for (i = 0; i < SMBUFFER_SIZE - 1; ++i) {
-            int ch = getchar ();
+            int ch = getchar();
             if (ch == '\r' || ch == '\n') {
                 smbuffer[i] = ch;
                 ++i;
@@ -121,6 +107,8 @@ int main(void)
         }
         /* Terminate! */
         smbuffer[i] = 0;
-        SCPI_Input (&scpi_context, smbuffer, strlen (smbuffer));
+        SCPI_Input(&G_SCPI_CONTEXT, smbuffer, strlen (smbuffer));
     }
+
+    return 0;
 }

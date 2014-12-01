@@ -141,3 +141,53 @@ scpi_result_t TEST_FREQ(scpi_t *context)
     synth_set_frequency(ch_uns, freq.value);
     return SCPI_RES_OK;
 }
+/**
+ * SCPI: Set DDS phase
+ * Test:FREQ channel, phase
+ * 
+ * \param context   Active SCPI context
+ * \return  Success or failure
+ */
+
+scpi_result_t TEST_PHASE(scpi_t *context)
+{
+  int32_t ch;
+  unsigned ch_uns;
+  scpi_number_t phase;
+
+
+    if (!SCPI_ParamInt(context, &ch, true)) {
+        return SCPI_RES_ERR;
+    }
+
+    if (!SCPI_ParamNumber(context, &phase, true)) {
+        return SCPI_RES_ERR;
+    }
+
+    ch_uns = ch;
+    printf("Setting phase %u to %f\r\n", ch_uns, phase.value);
+    synth_set_phase(ch_uns, phase.value);
+    return SCPI_RES_OK;
+
+}
+scpi_result_t TEST_AMPLITUDE(scpi_t *context)
+{
+  int32_t ch;
+  unsigned ch_uns;
+  scpi_number_t amplitude;
+
+
+    if (!SCPI_ParamInt(context, &ch, true)) {
+        return SCPI_RES_ERR;
+    }
+
+    if (!SCPI_ParamNumber(context, &amplitude, true)) {
+        return SCPI_RES_ERR;
+    }
+
+    ch_uns = ch;
+    printf("Setting amplitude %u to %f\r\n", ch_uns, amplitude.value);
+    synth_set_amplitude(ch_uns, amplitude.value);
+    return SCPI_RES_OK;
+
+}

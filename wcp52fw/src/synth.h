@@ -24,8 +24,18 @@ void synth_initialize_clock(void);
  * \param freq      Frequency in Hz.
  */
 void synth_set_frequency(unsigned channel, double freq);
-
-
+/**
+ * Set the DDS phase on a channel.
+ * \param channel   Channel number, either 0 or 1
+ * \param phase     phase in degrees.
+ */
+void synth_set_phase(unsigned channel, double phase);
+/**
+ * Set the DDS amplitude on a channel.
+ * \param channel   Channel number, either 0 or 1
+ * \param phase     phase in degrees.
+ */
+void synth_set_amplitude(unsigned channel, double amplitude);
 /**
  * \addtogroup FR1 Function register 1
  * \{ */
@@ -50,6 +60,12 @@ void synth_set_frequency(unsigned channel, double freq);
 
 #define CFTW_LEN 4
 #define CFTW_ADDR 0x04
+
+#define CPOW_LEN 2
+#define CPOW_ADDR 0x05
+
+#define CACR_LEN 3
+#define CACR_ADDR 0x06
 /** \} */
 
 /* Register set macro */

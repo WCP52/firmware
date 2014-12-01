@@ -82,7 +82,8 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "Test:INIF", .callback = TEST_INIF,}, /* Init interface */
     {.pattern = "Test:INCK", .callback = TEST_INCK,}, /* Init clock */
     {.pattern = "Test:FREQ", .callback = TEST_FREQ,},
-
+    {.pattern = "Test:PHASE", .callback = TEST_PHASE,},
+    {.pattern = "Test:AMPlitude", .callback = TEST_AMPLITUDE,},
     SCPI_CMD_LIST_END
 };
 

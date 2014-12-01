@@ -15,6 +15,14 @@ uint8_t G_CFR[CFR_LEN];
 uint8_t G_CFTW0[CFTW_LEN];
 uint8_t G_CFTW1[CFTW_LEN];
 
+uint8_t G_CPOW0[CPOW_LEN];
+uint8_t G_CPOW1[CPOW_LEN];
+
+
+uint8_t G_CACR0[CACR_LEN];
+uint8_t G_CACR1[CACR_LEN];
+
+
 /**
  * Reset the DDS IO system. This aborts a current IO cycle and prepares for
  * the next one.
@@ -158,4 +166,38 @@ void synth_set_frequency(unsigned channel, double freq)
 
     // Transmit the bytes
     send_channel_register(CFTW_ADDR, cftw, 4, channel);
+}
+
+void synth_set_phase(unsigned channel, double phase)
+{
+
+  if (channel > 1) return;
+  // convert "phase" to phase offset word
+  // equation according to datasheet page 18 
+  double pow =  (16384. * phase) / 360 ; 
+  uint16_t pow14 = (uint16_t)pow & 0x03FFF;
+
+   //prepare pow as array of 2 bytes 
+    uint8_t *cpow = channel ? G_CPOW1 : G_CPOW0;
+    cpow[0] = (pow14 & 0x0000ff00uL) >> 8;
+    cpow[1] = (pow14 & 0x000000ffuL);
+   
+    send_channel_register(CPOW_ADDR, cpow, 2, channel);
+
+}
+void synth_set_amplitude(unsigned channel, double amplitude)
+{
+     if (channel > 1) return;
+     double acr =  1023 * amplitude ; 
+     // 
+     uint16_t acr16 = (uint16_t)acr & 0x03FF;
+     //setting the amplitude enable bit high
+     acr16 |= 0x800; 
+
+    uint8_t *cacr = channel ? G_CACR1 : G_CACR0;
+    cacr[0] = 0; // Ramp rate
+    cacr[1] = (acr16 & 0x0000ff00uL) >> 8;
+    cacr[2] = (acr16 & 0x000000ffuL);
+
+    send_channel_register(CACR_ADDR, cacr, 3, channel);
 }

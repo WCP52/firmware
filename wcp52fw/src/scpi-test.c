@@ -8,6 +8,7 @@
 #include "asf.h"
 #include "conf_board.h"
 #include "synth.h"
+#include "acquisition.h"
 #include "util.h"
 
 /************************************
@@ -198,4 +199,18 @@ scpi_result_t TEST_AMPLITUDE(scpi_t *context)
     synth_set_amplitude(ch_uns, amplitude.value);
     return SCPI_RES_OK;
 
+}
+
+/**
+ * SCPI: Sample the input.
+ * Test:SAMple
+ *
+ * \param context   Active SCPI context
+ * \return  Success or failure
+ */
+scpi_result_t TEST_SAMPLE(scpi_t *context)
+{
+    (void) context;
+    printf ("%f\r\n", acq_get_one_value ());
+    return SCPI_RES_OK;
 }

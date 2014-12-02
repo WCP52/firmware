@@ -84,6 +84,7 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "Test:FREQ", .callback = TEST_FREQ,},
     {.pattern = "Test:PHASE", .callback = TEST_PHASE,},
     {.pattern = "Test:AMPlitude", .callback = TEST_AMPLITUDE,},
+    {.pattern = "Test:SAMple", .callback = TEST_SAMPLE,},
     SCPI_CMD_LIST_END
 };
 

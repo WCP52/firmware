@@ -168,6 +168,12 @@ void synth_set_frequency(unsigned channel, double freq)
     send_channel_register(CFTW_ADDR, cftw, 4, channel);
 }
 
+
+/**
+ * Set the DDS phase on a channel.
+ * \param channel   Channel number, either 0 or 1
+ * \param freq      Phase in degrees.
+ */
 void synth_set_phase(unsigned channel, double phase)
 {
 
@@ -185,6 +191,12 @@ void synth_set_phase(unsigned channel, double phase)
     send_channel_register(CPOW_ADDR, cpow, 2, channel);
 
 }
+
+/**
+ * Set the DDS amplitude on a channel.
+ * \param channel   Channel number, either 0 or 1
+ * \param freq      Amplitude
+ */
 void synth_set_amplitude(unsigned channel, double amplitude)
 {
      if (channel > 1) return;

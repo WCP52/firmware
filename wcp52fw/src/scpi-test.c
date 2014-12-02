@@ -141,14 +141,14 @@ scpi_result_t TEST_FREQ(scpi_t *context)
     synth_set_frequency(ch_uns, freq.value);
     return SCPI_RES_OK;
 }
+
 /**
  * SCPI: Set DDS phase
- * Test:FREQ channel, phase
+ * Test:PHASE channel, phase
  * 
  * \param context   Active SCPI context
  * \return  Success or failure
  */
-
 scpi_result_t TEST_PHASE(scpi_t *context)
 {
   int32_t ch;
@@ -170,6 +170,14 @@ scpi_result_t TEST_PHASE(scpi_t *context)
     return SCPI_RES_OK;
 
 }
+
+/**
+ * SCPI: Set DDS amplitude
+ * Test:AMPlitude channel, amp
+ * 
+ * \param context   Active SCPI context
+ * \return  Success or failure
+ */
 scpi_result_t TEST_AMPLITUDE(scpi_t *context)
 {
   int32_t ch;

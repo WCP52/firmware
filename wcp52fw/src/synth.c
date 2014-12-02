@@ -204,7 +204,7 @@ void synth_set_amplitude(unsigned channel, double amplitude)
      // 
      uint16_t acr16 = (uint16_t)acr & 0x03FF;
      //setting the amplitude enable bit high
-     acr16 |= 0x800; 
+     acr16 |= 0x1000;
 
     uint8_t *cacr = channel ? G_CACR1 : G_CACR0;
     cacr[0] = 0; // Ramp rate

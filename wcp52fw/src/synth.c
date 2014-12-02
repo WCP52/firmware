@@ -165,7 +165,7 @@ void synth_set_frequency(unsigned channel, double freq)
     cftw[3] = (ftw32 & 0x000000ffuL);
 
     // Transmit the bytes
-    send_channel_register(CFTW_ADDR, cftw, 4, channel);
+    send_channel_register(CFTW_ADDR, cftw, CFTW_LEN, channel);
 }
 
 
@@ -188,7 +188,7 @@ void synth_set_phase(unsigned channel, double phase)
     cpow[0] = (pow14 & 0x0000ff00uL) >> 8;
     cpow[1] = (pow14 & 0x000000ffuL);
    
-    send_channel_register(CPOW_ADDR, cpow, 2, channel);
+    send_channel_register(CPOW_ADDR, cpow, CPOW_LEN, channel);
 
 }
 
@@ -211,5 +211,5 @@ void synth_set_amplitude(unsigned channel, double amplitude)
     cacr[1] = (acr16 & 0x0000ff00uL) >> 8;
     cacr[2] = (acr16 & 0x000000ffuL);
 
-    send_channel_register(CACR_ADDR, cacr, 3, channel);
+    send_channel_register(CACR_ADDR, cacr, CACR_LEN, channel);
 }

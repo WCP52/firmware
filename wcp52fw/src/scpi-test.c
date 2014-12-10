@@ -210,7 +210,33 @@ scpi_result_t TEST_AMPLITUDE(scpi_t *context)
  */
 scpi_result_t TEST_SAMPLE(scpi_t *context)
 {
-    (void) context;
-    printf ("%f\r\n", acq_get_one_value ());
+    int32_t num_samples;
+    if (!SCPI_ParamInt(context, &num_samples, true)) {
+        return SCPI_RES_ERR;
+    }
+
+    printf ("%f\r\n", acq_get_values (num_samples));
+    return SCPI_RES_OK;
+}
+
+/**
+ * SCPI: Set active input channel.
+ * TEST:CHannel
+ *
+ * \param context   Active SCPI context
+ * \return  Success or failure
+ */
+scpi_result_t TEST_CHANNEL(scpi_t *context)
+{
+  int32_t ch;
+
+
+    if (!SCPI_ParamInt(context, &ch, true)) {
+        return SCPI_RES_ERR;
+    }
+
+
+    util_set_pin (GPIO_FRONT_CHAN, ch);
+
     return SCPI_RES_OK;
 }

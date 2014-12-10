@@ -66,6 +66,7 @@
 /** SPI base address for SPI slave mode, (on different board) */
 #define SPI_SLAVE_BASE       SPI
 
+#define ADC_CLOCK       6400000
 
 /* GPIO pins for synth control */
 #define GPIO_SYNTH_nCS	PIO_PA4_IDX
@@ -78,6 +79,10 @@
 #define GPIO_SYNTH_MRST_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
 #define GPIO_SYNTH_SYNCIO   PIO_PA3_IDX
 #define GPIO_SYNTH_SYNCIO_F (PIO_OUTPUT_1 | PIO_DEFAULT)
+
+/* GPIO pins for frontend control */
+#define GPIO_FRONT_CHAN     PIO_PA2_IDX
+#define GPIO_FRONT_CHAN_F   (PIO_OUTPUT_1 | PIO_DEFAULT)
 
 
 #endif /* CONF_BOARD_H_INCLUDED */

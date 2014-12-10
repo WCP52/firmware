@@ -11,6 +11,7 @@
 #include <assert.h>
 #include "asf.h"
 #include "serial.h"
+#include "acquisition.h"
 #include "conf_board.h"
 
 #include "synth.h"
@@ -57,8 +58,6 @@ static void spi_init(void)
     spi_enable(SPI_MASTER_BASE);
 }
 
-
-
 /**
  * Initialize the GPIO pins that are not handled by board_init().
  */
@@ -69,6 +68,7 @@ static void pins_init(void)
     gpio_configure_pin(GPIO_SYNTH_PWRDN, GPIO_SYNTH_PWRDN_F);
     gpio_configure_pin(GPIO_SYNTH_MRST, GPIO_SYNTH_MRST_F);
     gpio_configure_pin(GPIO_SYNTH_SYNCIO, GPIO_SYNTH_SYNCIO_F);
+    gpio_configure_pin(GPIO_FRONT_CHAN, GPIO_FRONT_CHAN_F);
 }
 
 /**
@@ -84,6 +84,7 @@ int main(void)
     pins_init();
     console_init();
     spi_init();
+    adc_setup();
     
     SCPI_Init(&G_SCPI_CONTEXT);
 

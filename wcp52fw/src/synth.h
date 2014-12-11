@@ -49,6 +49,14 @@ void synth_set_amplitude(unsigned channel, double amplitude);
 #define FR1_PLLRATIO_B 2
 /** \} */
 
+/**
+ * \addtogroup FR2 Function register 2
+ * \{ */
+#define FR2_LEN 2
+#define FR2_ADDR 0x02
+#define FR2_ALL_AUTOCLEAR_PHASE_I 0
+#define FR2_ALL_AUTOCLEAR_PHASE_B 5
+
 
 /**
  * \addtogroup CHC Channel control registers

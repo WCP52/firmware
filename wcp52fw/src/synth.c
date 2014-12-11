@@ -11,6 +11,7 @@
 
 // Synthesizer registers
 uint8_t G_FR1[FR1_LEN];
+uint8_t G_FR2[FR2_LEN];
 uint8_t G_CFR[CFR_LEN];
 uint8_t G_CFTW0[CFTW_LEN];
 uint8_t G_CFTW1[CFTW_LEN];
@@ -139,6 +140,10 @@ void synth_initialize_clock(void)
     REGSET(G_FR1, FR1_PLLRATIO, 20); /* PLL: 25 MHz crystal * 20 = 500 MHz */
 
     send_control_register(FR1_ADDR, G_FR1, FR1_LEN);
+
+    memset(G_FR2, 0, FR2_LEN);
+    REGSET(G_FR2, FR2_ALL_AUTOCLEAR_PHASE, 1); /* Autoclear phase accumulator on IOup*/
+    send_control_register(FR2_ADDR, G_FR2, FR2_LEN);
 }
 
 /**

@@ -13,9 +13,6 @@
 #include "serial.h"
 #include "acquisition.h"
 #include "conf_board.h"
-#include "conf_usb.h"
-#include "ui.h"
-#include "uart.h"
 
 #include "synth.h"
 
@@ -58,7 +55,6 @@ static void spi_init(void)
             (sysclk_get_cpu_hz() / 100000uL));
     spi_set_transfer_delay(SPI_MASTER_BASE, SPI_CHIP_SEL, SPI_DLYBS,
             SPI_DLYBCT);
-
     spi_enable(SPI_MASTER_BASE);
 }
 
@@ -82,22 +78,16 @@ static void pins_init(void)
  */
 int main(void)
 {
-    //Initialize interuppt requests
-    irq_initilize_vectors();
-    cpu_irq_enable();
-
     // Initialize all used peripherals.
     sysclk_init();
     board_init();
-    ui_init();
-    ui_powerdown();
     pins_init();
     console_init();
     spi_init();
     adc_setup();
     
     SCPI_Init(&G_SCPI_CONTEXT);
-    udc_start();
+
     puts("**Initialization successful\r");
 
     const size_t SMBUFFER_SIZE = 10;

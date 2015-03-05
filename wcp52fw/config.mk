@@ -59,6 +59,7 @@ ASSRCS =
 
 # List of include paths.
 INC_PATH = \
+		../ \
 		../config \
 		$(realpath ../scpi-parser/libscpi/inc) \
 		common/boards                                      \
@@ -88,7 +89,12 @@ INC_PATH = \
 		sam/utils/preprocessor                             \
 		thirdparty/CMSIS/Include                           \
 		thirdparty/CMSIS/Lib/GCC \
-		sam/applications/getting-started/sam4s16c_sam4s_xplained/gcc
+		sam/applications/getting-started/sam4s16c_sam4s_xplained/gcc\
+		common/services/usb \
+		common/services/usb/class/cdc \
+		common/services/usb/class/cdc/device \
+		common/services/usb/udc \
+		common/services/sleepmgr
 
 # Additional search paths for libraries.
 LIB_PATH =  \
@@ -126,9 +132,9 @@ ARFLAGS =
 
 # Extra flags to use when assembling.
 ASFLAGS = 
-
+#-Werror -fmax-errors=3
 # Extra flags to use when compiling.
-CFLAGS = --specs=nosys.specs -Wextra -Werror -fmax-errors=3 -fdiagnostics-show-option \
+CFLAGS = --specs=nosys.specs -Wextra  -fdiagnostics-show-option \
 		-iquote $(realpath ../scpi-parser/libscpi/inc) \
 
 # Extra flags to use when preprocessing.

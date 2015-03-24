@@ -2,6 +2,6 @@ si 1
 speed adaptive
 r
 h
-loadfile wcp52fw_flash.hex
+loadfile firmware.hex
 r
 q

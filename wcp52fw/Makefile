@@ -15,15 +15,34 @@ ASF_OBJECTS = $(patsubst %.c,%.o,${ASF_SOURCES})
 OBJECTS = $(patsubst %.c,%.o,${SOURCES})
 
 ###################################################
-# Compiler setups
+# Buildchain tools
+
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
-CFLAGS = ${INCLUDES} ${ARM_CFLAGS} ${LANG_CFLAGS} ${EXTRA_CFLAGS}
-ARM_CFLAGS = -mthumb -D__SAM4S16C__ -DBOARD=SAM4S_XPLAINED -DARM_MATH_CM4=true \
-			 -Dprintf=iprintf -DUDD_ENABLE -fdata-sections -ffunction-sections \
-			 -mlong-calls -mcpu=cortex-m4
-LANG_CFLAGS = -Wall -std=gnu99
+SIZE = arm-none-eabi-size
+
+###################################################
+# Platform flags
+
+ARM_CFLAGS = \
+	-mthumb -DARM_MATH_CM4=true -mcpu=cortex-m4 \
+	-mlong-calls -D__SAM4S16C__ -DUDD_ENABLE \
+	-DBOARD=SAM4S_XPLAINED \
+
+ARM_LDFLAGS = -Wl,--entry=Reset_Handler -Wl,--cref --specs=nosys.specs \
+	-Wl,--gc-sections -Wl,-T src/ASF/flash.ld -Wl,-Map=firmware.map,--cref \
+	-Lsrc/ASF/thirdpart/CMSIS/Lib/GCC
+
+###################################################
+# Main build flags
+
+LANG_CFLAGS = -Wall -std=c99 -g -fdata-sections -ffunction-sections
 ${OBJECTS}: EXTRA_CFLAGS := -Wextra -Werror
+
+###################################################
+# Library flags
+
+LDFLAGS = -lm
 ${ASF_OBJECTS}: EXTRA_CFLAGS := -Wno-unused-but-set-variable
 
 INCLUDES = \
@@ -65,8 +84,9 @@ INCLUDES = \
 	-Isrc/ASF/thirdparty/CMSIS/Lib/GCC \
 	-Isrc/config \
 
+CFLAGS = ${INCLUDES} ${ARM_CFLAGS} ${LANG_CFLAGS} ${EXTRA_CFLAGS}
 
-.PHONY: all clean
+.PHONY: all clean program size_prof
 
 all: firmware.hex
 
@@ -80,12 +100,17 @@ firmware.hex: firmware.elf
 
 firmware.elf: ${ASF_OBJECTS} ${OBJECTS}
 	@echo [LD]
-	@${CC} -Wl,--entry=Reset_Handler -Wl,--cref ${ARM_CFLAGS} ${LANG_CFLAGS} \
-		--specs=nosys.specs -Wl,--gc-sections -Wl,-T src/ASF/flash.ld -Wl,-Map=firmware.map,--cref \
-		-Lsrc/ASF/thirdpart/CMSIS/Lib/GCC ${ASF_OBJECTS} ${OBJECTS} -lc -lgcc -lnosys -lm -o $@
+	@${CC} ${ARM_LDFLAGS} ${LDFLAGS} ${ASF_OBJECTS} ${OBJECTS} -lc -lgcc -lnosys -o $@
+	@${SIZE} $@
 
 clean:
 	@for i in ${ASF_OBJECTS} ${OBJECTS} firmware.elf firmware.hex; do \
 		echo [RM] $$i; \
 		rm -f "$$i"; \
 	done
+
+program: firmware.hex jlink-script.jlink
+	JLinkExe -device ATSAM4S16C -CommanderScript jlink-script.jlink
+
+size_prof: firmware.elf
+	nm -CSr --size-sort $< | less

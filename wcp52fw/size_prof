@@ -1,1 +1,0 @@
-nm -CSr --size-sort wcp52fw_flash.elf | less

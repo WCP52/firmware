@@ -14,6 +14,8 @@ ASF_SOURCES = $(shell find src/ASF -name '*.c')
 ASF_OBJECTS = $(patsubst %.c,%.o,${ASF_SOURCES})
 OBJECTS = $(patsubst %.c,%.o,${SOURCES})
 
+DEP_FILES = $(patsubst %.c,%.d,${SOURCES} ${ASF_SOURCES}) # used by 'clean'
+
 ###################################################
 # Buildchain tools
 
@@ -104,7 +106,7 @@ firmware.elf: ${ASF_OBJECTS} ${OBJECTS}
 	@${SIZE} $@
 
 clean:
-	@for i in ${ASF_OBJECTS} ${OBJECTS} firmware.elf firmware.hex; do \
+	@for i in ${ASF_OBJECTS} ${OBJECTS} ${DEP_FILES} firmware.elf firmware.hex; do \
 		echo [RM] $$i; \
 		rm -f "$$i"; \
 	done

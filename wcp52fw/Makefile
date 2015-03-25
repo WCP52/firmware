@@ -17,15 +17,15 @@ OBJECTS = $(patsubst %.c,%.o,${SOURCES})
 # Compiler setups
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
-CFLAGS = ${INCLUDES} ${ARM_CFLAGS} ${LANG_CFLAGS}
+CFLAGS = ${INCLUDES} ${ARM_CFLAGS} ${LANG_CFLAGS} ${EXTRA_CFLAGS}
 ARM_CFLAGS = -mthumb -D__SAM4S16C__ -DBOARD=SAM4S_XPLAINED -DARM_MATH_CM4=true \
 			 -Dprintf=iprintf -DUDD_ENABLE -fdata-sections -ffunction-sections \
 			 -mlong-calls -mcpu=cortex-m4
-LANG_CFLAGS = -Wall -Wextra -std=gnu99
-LANG_CFLAGS = -std=gnu99
+LANG_CFLAGS = -Wall -std=gnu99
+${OBJECTS}: EXTRA_CFLAGS := -Wextra -Werror
 
 INCLUDES = \
-	-I$(realpath ../scpi-parser/libscpi/inc) \
+	-I../scpi-parser/libscpi/inc \
 	-Isrc/ASF/common/boards                                      \
 	-Isrc/ASF/common/services/clock                              \
 	-Isrc/ASF/common/services/gpio                               \
@@ -61,13 +61,22 @@ INCLUDES = \
 
 all: firmware.hex
 
+%.o: %.c
+	@echo [CC] $<
+	@${CC} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
+
 firmware.hex: firmware.elf
-	${OBJCOPY} -O ihex $< $@
+	@echo "[OBJCOPY] elf -> hex"
+	@${OBJCOPY} -O ihex $< $@
 
 firmware.elf: ${ASF_OBJECTS} ${OBJECTS}
-	${CC} -Wl,--entry=Reset_Handler -Wl,--cref ${ARM_CFLAGS} ${LANG_CFLAGS} \
+	@echo [LD]
+	@${CC} -Wl,--entry=Reset_Handler -Wl,--cref ${ARM_CFLAGS} ${LANG_CFLAGS} \
 		--specs=nosys.specs -Wl,--gc-sections -Wl,-T src/ASF/flash.ld -Wl,-Map=firmware.map,--cref \
 		-Lsrc/ASF/thirdpart/CMSIS/Lib/GCC ${ASF_OBJECTS} ${OBJECTS} -lc -lgcc -lnosys -lm -o $@
 
 clean:
-	rm -f ${ASF_OBJECTS} ${OBJECTS}
+	@for i in ${ASF_OBJECTS} ${OBJECTS} firmware.elf firmware.hex; do \
+		echo [RM] $$i; \
+		rm -f "$$i"; \
+	done

@@ -13,6 +13,7 @@
 #include "serial.h"
 #include "acquisition.h"
 #include "conf_board.h"
+#include <udc.h>
 
 #include "synth.h"
 
@@ -79,12 +80,15 @@ static void pins_init(void)
 int main(void)
 {
     // Initialize all used peripherals.
+    irq_initialize_vectors();
+    cpu_irq_enable();
     sysclk_init();
     board_init();
     pins_init();
     console_init();
     spi_init();
     adc_setup();
+    udc_start();
     
     SCPI_Init(&G_SCPI_CONTEXT);
 
@@ -113,3 +117,4 @@ int main(void)
 
     return 0;
 }
+

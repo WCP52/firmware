@@ -1,4 +1,0 @@
-#!/bin/bash
-
-JLinkExe -device ATSAM4S16C -CommanderScript jlink-script.jlink
-

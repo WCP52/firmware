@@ -11,63 +11,6 @@
 #include "acquisition.h"
 #include "util.h"
 
-/************************************
- * Code for TEST:SET and TEST:CLEAR *
- ************************************/
-
-// List of pins we can set or clear
-static const char *SETCLR_NAMES[] = {
-    "NCS", "IOUPdate", "PWRDN", "MRST", "SYNCIO", "LED0", "LED1", "LIST", NULL
-};
-
-// Polarity of each pin (1 for inverted; 2 indicates the LIST item to avoid
-// a strcmp
-static const uint8_t SETCLR_POL[] = {
-    0, 0, 0, 0, 0, 1, 1, 2 };
-
-// The GPIO pin IDs
-static const int32_t SETCLR_PINS[] = {
-    GPIO_SYNTH_nCS, GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_PWRDN,
-    GPIO_SYNTH_MRST, GPIO_SYNTH_SYNCIO, LED0_GPIO, LED1_GPIO };
-
-/**
- * SCPI: Set or clear a pin.
- * Test:Set PIN_ID      Test:Set LIST (to list all)
- * Test:Clear PIN_ID    Test:Clear LIST (to list all)
- * 
- * \param context   Active SCPI context
- * \return  Success or failure
- */
-scpi_result_t TEST_SETCLR(scpi_t *context)
-{
-    int32_t choice;
-
-    if (!SCPI_ParamChoice(context, SETCLR_NAMES, &choice, true)) {
-        return SCPI_RES_ERR;
-    }
-
-    // List names
-    if (SETCLR_POL[choice] == 2) {
-        size_t i;
-        for (i = 0; SETCLR_NAMES[i]; ++i) {
-            if (SETCLR_POL[i] != 2) {
-                if (i) {
-                    fputs(", ", stdout);
-                }
-                fputs(SETCLR_NAMES[i], stdout);
-            }
-        }
-        fputs("\r\n", stdout);
-        return SCPI_RES_OK;
-    }
-
-    uint8_t value = SCPI_IsCmd(context, "TEST:SET") ? 1 : 0;
-    value ^= SETCLR_POL[choice];    // Invert if pol=1
-
-    util_set_pin(SETCLR_PINS[choice], value);
-    return SCPI_RES_OK;
-}
-
 /**
  * SCPI: Send arbitrary SPI data.
  * Test:SPI DATA
@@ -236,7 +179,7 @@ scpi_result_t TEST_CHANNEL(scpi_t *context)
     }
 
 
-    util_set_pin (GPIO_FRONT_CHAN, ch);
+    util_set_pin (GPIO_CHANSEL, ch);
 
     return SCPI_RES_OK;
 }

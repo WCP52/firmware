@@ -29,7 +29,7 @@ SIZE = arm-none-eabi-size
 ARM_CFLAGS = \
 	-mthumb -DARM_MATH_CM4=true -mcpu=cortex-m4 \
 	-mlong-calls -D__SAM4S16C__ -DUDD_ENABLE \
-	-DBOARD=SAM4S_XPLAINED \
+	-DBOARD=USER_BOARD \
 
 ARM_LDFLAGS = -Wl,--entry=Reset_Handler -Wl,--cref --specs=nosys.specs \
 	-Wl,--gc-sections -Wl,-T src/ASF/flash.ld -Wl,-Map=firmware.map,--cref \

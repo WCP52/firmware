@@ -1,88 +1,47 @@
-/**
- * \file
- *
- * \brief Board configuration.
- *
- * Copyright (c) 2011-2012 Atmel Corporation. All rights reserved.
- *
- * \asf_license_start
- *
- * \page License
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. The name of Atmel may not be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * 4. This software may only be redistributed and used in connection with an
- *    Atmel microcontroller product.
- *
- * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
- * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * \asf_license_stop
- *
- */
-
 #ifndef CONF_BOARD_H_INCLUDED
 #define CONF_BOARD_H_INCLUDED
 
-/** Enable Com Port. */
-#define CONF_BOARD_UART_CONSOLE
-
-/** Usart Hw ID used by the console (UART0). */
-#define CONSOLE_UART_ID          ID_UART0
-
-
-
-/** SPI MACRO definition */
-#define CONF_BOARD_SPI
-
-/** SPI slave select MACRO definition */
-#define CONF_BOARD_SPI_NPCS0
-
-/** Spi Hw ID . */
-#define SPI_ID          ID_SPI
-
-/** SPI base address for SPI master mode*/
 #define SPI_MASTER_BASE      SPI
-/** SPI base address for SPI slave mode, (on different board) */
-#define SPI_SLAVE_BASE       SPI
 
 #define ADC_CLOCK       6400000
 
-/* GPIO pins for synth control */
-#define GPIO_SYNTH_nCS	PIO_PA4_IDX
-#define GPIO_SYNTH_nCS_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_IOUPDATE	PIO_PB3_IDX
-#define GPIO_SYNTH_IOUPDATE_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_PWRDN	PIO_PB2_IDX
-#define GPIO_SYNTH_PWRDN_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_MRST		PIO_PA31_IDX
-#define GPIO_SYNTH_MRST_F	(PIO_OUTPUT_1 | PIO_DEFAULT)
-#define GPIO_SYNTH_SYNCIO   PIO_PA3_IDX
-#define GPIO_SYNTH_SYNCIO_F (PIO_OUTPUT_1 | PIO_DEFAULT)
+#define PIN_LIST \
+XPINGROUP("Pins for optional FTDI FT230")\
+XPIN(GPIO_nSLEEP,       PA0,    PIO_INPUT,              "USB #SLEEP indication")\
+XPIN(GPIO_nRTS,         PA1,    PIO_INPUT | PIO_PULLUP, "UART nRTS")\
+XPIN(GPIO_nCTS,         PC16,   PIO_OUTPUT_1,           "UART nCTS")\
+XPIN(GPIO_UART_RX,      PA9,    PIO_INPUT | PIO_PULLUP, "UART RX")\
+XPIN(GPIO_UART_TX,      PA10,   PIO_OUTPUT_1,           "UART TX")\
+XPINGROUP("Board management")\
+XPIN(GPIO_LED0,         PA11,   PIO_OUTPUT_0,           "Debug LED 0")\
+XPIN(GPIO_LED1,         PC2,    PIO_OUTPUT_0,           "Debug LED 1")\
+XPIN(GPIO_LED2,         PC12,   PIO_OUTPUT_0,           "Debug LED 2")\
+XPIN(GPIO_LED3,         PC13,   PIO_OUTPUT_0,           "Debug LED 3")\
+XPIN(GPIO_PWRDN,        PC17,   PIO_OUTPUT_0,           "Power supply control")\
+XPINGROUP("Instrument control")\
+XPIN(GPIO_CHANSEL,      PA2,    PIO_OUTPUT_0,           "Input channel select")\
+XPIN(GPIO_ATTEN,        PC14,   PIO_OUTPUT_0,           "Output attenuator enable")\
+XPIN(GPIO_LEVEL,        PA20,   PIO_INPUT,              "Main analog dB level input")\
+XPINGROUP("AD9958 interface")\
+XPIN(GPIO_DDS_SYNCIO,   PA5,    PIO_OUTPUT_0,           "Resets IO interface")\
+XPIN(GPIO_DDS_nCS,      PA6,    PIO_OUTPUT_1,           "SPI chip select (active low)")\
+XPIN(GPIO_DDS_MRST,     PA31,   PIO_OUTPUT_1,           "DDS master reset")\
+XPIN(GPIO_DDS_IOUPDATE, PB2,    PIO_OUTPUT_0,           "SPI register control")\
+XPIN(GPIO_DDS_PWRDN,    PC30,   PIO_OUTPUT_1,           "DDS powerdown")\
+XPIN(GPIO_MISO,         PA12,   PIO_PERIPH_A,           "SPI MISO")\
+XPIN(GPIO_MOSI,         PA13,   PIO_PERIPH_A,           "SPI MOSI")\
+XPIN(GPIO_SCK,          PA14,   PIO_PERIPH_A,           "SPI SCK")\
+XPIN(GPIO_DDS_SDIO1,    PA26,   PIO_INPUT | PIO_PULLUP, "Unused DDS SDIO1 pin")\
+XPINGROUP("Front panel I2C")\
+XPIN(GPIO_SDA,          PA3,    PIO_INPUT,              "I2C data")\
+XPIN(GPIO_SCL,          PA4,    PIO_INPUT,              "I2C clock")\
 
-/* GPIO pins for frontend control */
-#define GPIO_FRONT_CHAN     PIO_PA2_IDX
-#define GPIO_FRONT_CHAN_F   (PIO_OUTPUT_1 | PIO_DEFAULT)
 
+// Generate the basic pin IDs
+#define XPINGROUP(grp)
+#define XPIN(name, pin, flags, descr) static const int32_t name = PIO_ ## pin ## _IDX;
+PIN_LIST
+#undef XPIN
+#undef XPINGROUP
 
 #endif /* CONF_BOARD_H_INCLUDED */

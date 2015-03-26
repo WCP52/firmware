@@ -76,8 +76,6 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "STATus:PRESet", .callback = SCPI_StatusPreset,},
 
     /* Test commands */
-    {.pattern = "Test:Set", .callback = TEST_SETCLR,},
-    {.pattern = "Test:Clear", .callback = TEST_SETCLR,},
     {.pattern = "Test:SPI", .callback = TEST_SPI,},
     {.pattern = "Test:INIF", .callback = TEST_INIF,}, /* Init interface */
     {.pattern = "Test:INCK", .callback = TEST_INCK,}, /* Init clock */

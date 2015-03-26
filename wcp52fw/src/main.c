@@ -16,6 +16,23 @@
 #include <udc.h>
 
 #include "synth.h"
+#include "util.h"
+
+static void pins_init(void);
+
+/**
+ * Initialize the board
+ */
+// Cannot declare static, as board.h declares this extern
+void board_init(void)
+{
+    // Disable watchdog timer
+    WDT->WDT_MR = WDT_MR_WDDIS;
+
+    ioport_init();
+    pins_init();
+    pmc_enable_periph_clk(ID_PIOB);
+}
 
 /**
  * Initialize the UART stdio console.
@@ -60,16 +77,16 @@ static void spi_init(void)
 }
 
 /**
- * Initialize the GPIO pins that are not handled by board_init().
+ * Configure all device pins
  */
 static void pins_init(void)
 {
-    gpio_configure_pin(GPIO_SYNTH_nCS, GPIO_SYNTH_nCS_F);
-    gpio_configure_pin(GPIO_SYNTH_IOUPDATE, GPIO_SYNTH_IOUPDATE_F);
-    gpio_configure_pin(GPIO_SYNTH_PWRDN, GPIO_SYNTH_PWRDN_F);
-    gpio_configure_pin(GPIO_SYNTH_MRST, GPIO_SYNTH_MRST_F);
-    gpio_configure_pin(GPIO_SYNTH_SYNCIO, GPIO_SYNTH_SYNCIO_F);
-    gpio_configure_pin(GPIO_FRONT_CHAN, GPIO_FRONT_CHAN_F);
+    /* Configure pins */
+#define XPINGROUP(desc)
+#define XPIN(name, pin, setting, comment) gpio_configure_pin(PIO_ ## pin ## _IDX, (setting));
+PIN_LIST
+#undef XPIN
+#undef XPINGROUP
 }
 
 /**

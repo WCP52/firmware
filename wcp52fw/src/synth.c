@@ -30,8 +30,8 @@ uint8_t G_CACR1[CACR_LEN];
  */
 static void syncio(void)
 {
-    gpio_set_pin_high(GPIO_SYNTH_SYNCIO);
-    gpio_set_pin_low(GPIO_SYNTH_SYNCIO);
+    gpio_set_pin_high(GPIO_DDS_SYNCIO);
+    gpio_set_pin_low(GPIO_DDS_SYNCIO);
 }
 
 /**
@@ -39,8 +39,8 @@ static void syncio(void)
  */
 static void io_update(void)
 {
-	gpio_set_pin_high(GPIO_SYNTH_IOUPDATE);
-	gpio_set_pin_low(GPIO_SYNTH_IOUPDATE);
+	gpio_set_pin_high(GPIO_DDS_IOUPDATE);
+	gpio_set_pin_low(GPIO_DDS_IOUPDATE);
 }
 
 /**
@@ -60,14 +60,14 @@ static void spi_wait(void)
 static void send_control_register(
         uint8_t addr, const uint8_t *data, size_t data_length)
 {
-    gpio_set_pin_low(GPIO_SYNTH_nCS);
+    gpio_set_pin_low(GPIO_DDS_nCS);
     syncio();
     spi_write(SPI_MASTER_BASE, addr, 0, 0);
     for (size_t i = 0; i < data_length; ++i) {
         spi_write(SPI_MASTER_BASE, data[i], 0, 0);
     }
     spi_wait();
-    gpio_set_pin_high(GPIO_SYNTH_nCS);
+    gpio_set_pin_high(GPIO_DDS_nCS);
     io_update();
 }
 
@@ -84,7 +84,7 @@ static void send_channel_register(
 {
     if (channel_num > 1) return;
 
-    gpio_set_pin_low(GPIO_SYNTH_nCS);
+    gpio_set_pin_low(GPIO_DDS_nCS);
     syncio();
 
     // First, set the proper 'channel enable' bit
@@ -98,7 +98,7 @@ static void send_channel_register(
     }
 
     spi_wait();
-    gpio_set_pin_high(GPIO_SYNTH_nCS);
+    gpio_set_pin_high(GPIO_DDS_nCS);
     io_update();
 }
 
@@ -108,17 +108,17 @@ static void send_channel_register(
 void synth_initialize_interface(void)
 {
     // Ensure sane pin defaults
-	gpio_set_pin_low(GPIO_SYNTH_PWRDN);
-	gpio_set_pin_low(GPIO_SYNTH_nCS);
-	gpio_set_pin_low(GPIO_SYNTH_IOUPDATE);
+	gpio_set_pin_low(GPIO_DDS_PWRDN);
+	gpio_set_pin_low(GPIO_DDS_nCS);
+	gpio_set_pin_low(GPIO_DDS_IOUPDATE);
 
     // Make sure to delay after PWRDN goes low.
     // No idea how long! I can't find it in the datasheet...
     delay_ms(50);
 
     // Perform a master reset
-	gpio_set_pin_high(GPIO_SYNTH_MRST);
-	gpio_set_pin_low(GPIO_SYNTH_MRST);
+	gpio_set_pin_high(GPIO_DDS_MRST);
+	gpio_set_pin_low(GPIO_DDS_MRST);
 
     // Configure standard SPI mode
     syncio();
@@ -126,7 +126,7 @@ void synth_initialize_interface(void)
 	spi_write(SPI_MASTER_BASE, 0x02, 0, 0);
 
     spi_wait();
-    gpio_set_pin_high(GPIO_SYNTH_nCS);
+    gpio_set_pin_high(GPIO_DDS_nCS);
     io_update();
 }
 

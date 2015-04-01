@@ -28,7 +28,7 @@ SIZE = arm-none-eabi-size
 
 ARM_CFLAGS = \
 	-mthumb -DARM_MATH_CM4=true -mcpu=cortex-m4 \
-	-mlong-calls -D__SAM4S16C__ -DUDD_ENABLE \
+	-mlong-calls -D__SAM4S4C__ -DUDD_ENABLE \
 	-DBOARD=USER_BOARD \
 
 ARM_LDFLAGS = -Wl,--entry=Reset_Handler -Wl,--cref --specs=nosys.specs \
@@ -66,10 +66,7 @@ INCLUDES = \
 	-Isrc/ASF/common/utils \
 	-Isrc/ASF/common/utils/stdio/stdio_serial \
 	-Isrc/ASF/sam/applications/getting-started \
-	-Isrc/ASF/sam/applications/getting-started/sam4s16c_sam4s_xplained \
-	-Isrc/ASF/sam/applications/getting-started/sam4s16c_sam4s_xplained/gcc \
 	-Isrc/ASF/sam/boards \
-	-Isrc/ASF/sam/boards/sam4s_xplained \
 	-Isrc/ASF/sam/drivers/adc \
 	-Isrc/ASF/sam/drivers/pio \
 	-Isrc/ASF/sam/drivers/pmc \
@@ -112,7 +109,7 @@ clean:
 	done
 
 program: firmware.hex jlink-script.jlink
-	JLinkExe -device ATSAM4S16C -CommanderScript jlink-script.jlink
+	JLinkExe -device ATSAM4S4C -CommanderScript jlink-script.jlink
 
 size_prof: firmware.elf
 	nm -CSr --size-sort $< | less

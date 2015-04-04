@@ -109,7 +109,9 @@ clean:
 	done
 
 program: firmware.hex jlink-script.jlink
-	JLinkExe -device ATSAM4S4C -CommanderScript jlink-script.jlink
+	#JLinkExe -device ATSAM4S4C -CommanderScript jlink-script.jlink
+	# -c 'at91sam4 gpnvm set 1'
+	openocd -f flash.cfg -c init -c halt -c 'program firmware.elf verify' -c reset -c exit
 
 size_prof: firmware.elf
 	nm -CSr --size-sort $< | less

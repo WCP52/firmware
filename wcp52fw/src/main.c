@@ -81,6 +81,7 @@ PIN_LIST
 }
 
 extern bool cdc_enabled;
+
 /**
  * Main function.
  *
@@ -93,21 +94,14 @@ int main(void)
     irq_initialize_vectors();
     cpu_irq_enable();
     board_init();
-    //spi_init();
-    //adc_setup();
-    udc_start();
-    //console_init();
+    spi_init();
+    adc_setup();
+    //udc_start();
+    console_init();
     gpio_set_pin_high(GPIO_LED1);
     
-    //SCPI_Init(&G_SCPI_CONTEXT);
+    SCPI_Init(&G_SCPI_CONTEXT);
 
-    for(;;) {
-        char *out = "TEST\r\n";
-        char *ptr;
-        for (ptr = out; *ptr; ++ptr) {
-            if (cdc_enabled) udi_cdc_putc (*ptr);
-        }
-    }
     //puts("**Initialization successful\r");
 
     const size_t SMBUFFER_SIZE = 10;
@@ -116,7 +110,14 @@ int main(void)
         /* Get into smbuffer until either full, or a \r or \n */
         size_t i;
         for (i = 0; i < SMBUFFER_SIZE - 1; ++i) {
-            int ch = getchar();
+            char ch = 0;
+            if (cdc_enabled) {
+                ch = udi_cdc_getc();
+            } else {
+                --i;
+                continue;
+            }
+            if (!ch) continue;
             if (ch == '\r' || ch == '\n') {
                 smbuffer[i] = ch;
                 ++i;

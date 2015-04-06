@@ -2,9 +2,12 @@
 #include <asf.h>
 #include "udi_cdc.h"
 #include "usb_protocol_cdc.h"
+#include "conf_board.h"
 
 void main_sof_action (void)
-{}
+{
+
+}
 
 void main_resume_action (void)
 {}
@@ -12,19 +15,23 @@ void main_resume_action (void)
 void main_suspend_action (void)
 {}
 
-static bool authorize_cdc_transfert = false;
+bool cdc_enabled = false;
 
 bool callback_cdc_enable (uint8_t port)
 {
     (void) port;
-    authorize_cdc_transfert = true;
+    stdio_usb_enable ();
+    gpio_set_pin_high(GPIO_LED2);
+    cdc_enabled = true;
     return true;
 }
 
 void callback_cdc_disable (uint8_t port)
 {
     (void) port;
-    authorize_cdc_transfert = false;
+    cdc_enabled = false;
+    gpio_set_pin_low(GPIO_LED2);
+    stdio_usb_disable ();
 }
 
 void callback_cdc_set_coding_ext(uint8_t port, usb_cdc_line_coding_t *cfg)
@@ -47,10 +54,3 @@ void callback_cdc_rx_notify(uint8_t port)
     (void) port;
 }
 
-void task (void)
-{
-    if (authorize_cdc_transfert) {
-        udi_cdc_putc('A');
-        udi_cdc_getc();
-    }
-}

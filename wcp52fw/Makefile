@@ -66,7 +66,7 @@ INCLUDES = \
 	-Isrc/ASF/common/services/usb/class/cdc/device \
 	-Isrc/ASF/common/services/usb/udc \
 	-Isrc/ASF/common/utils \
-	-Isrc/ASF/common/utils/stdio/stdio_serial \
+	-Isrc/ASF/common/utils/stdio/stdio_usb \
 	-Isrc/ASF/sam/applications/getting-started \
 	-Isrc/ASF/sam/boards \
 	-Isrc/ASF/sam/drivers/adc \

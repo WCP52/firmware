@@ -39,16 +39,7 @@ void board_init(void)
  */
 static void console_init(void)
 {
-    const usart_serial_options_t uart_serial_options = {
-        .baudrate = CONF_UART_BAUDRATE,
-        .paritytype = CONF_UART_PARITY,
-        .charlength = US_MR_CHRL_8_BIT,
-        .stopbits = false
-    };
-
-    // Configure console UART.
-    sysclk_enable_peripheral_clock(CONSOLE_UART_ID);
-    stdio_serial_init(CONF_UART, &uart_serial_options);
+    stdio_usb_init();
 }
 
 
@@ -89,7 +80,7 @@ PIN_LIST
 #undef XPINGROUP
 }
 
-void task(void);
+extern bool cdc_enabled;
 /**
  * Main function.
  *
@@ -102,16 +93,22 @@ int main(void)
     irq_initialize_vectors();
     cpu_irq_enable();
     board_init();
-    //console_init();
     //spi_init();
     //adc_setup();
     udc_start();
+    //console_init();
     gpio_set_pin_high(GPIO_LED1);
     
-    for(;;) task();
-    SCPI_Init(&G_SCPI_CONTEXT);
+    //SCPI_Init(&G_SCPI_CONTEXT);
 
-    puts("**Initialization successful\r");
+    for(;;) {
+        char *out = "TEST\r\n";
+        char *ptr;
+        for (ptr = out; *ptr; ++ptr) {
+            if (cdc_enabled) udi_cdc_putc (*ptr);
+        }
+    }
+    //puts("**Initialization successful\r");
 
     const size_t SMBUFFER_SIZE = 10;
     char smbuffer[10];

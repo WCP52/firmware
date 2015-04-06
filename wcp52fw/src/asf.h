@@ -92,8 +92,8 @@
 // From module: SPI - Serial Peripheral Interface
 #include <spi.h>
 
-// From module: Standard serial I/O (stdio) - SAM implementation
-#include <stdio_serial.h>
+// From module: USB stdio
+#include <stdio_usb.h>
 
 // From module: System Clock Control - SAM4S implementation
 #include <sysclk.h>

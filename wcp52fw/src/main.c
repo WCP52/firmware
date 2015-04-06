@@ -30,7 +30,7 @@ void board_init(void)
     WDT->WDT_MR = WDT_MR_WDDIS;
 
     ioport_init();
-    //pins_init();
+    pins_init();
     pmc_enable_periph_clk(ID_PIOB);
 }
 
@@ -89,6 +89,7 @@ PIN_LIST
 #undef XPINGROUP
 }
 
+void task(void);
 /**
  * Main function.
  *
@@ -96,23 +97,18 @@ PIN_LIST
  */
 int main(void)
 {
-    (void) console_init;
-    (void) spi_init;
-    (void) pins_init;
     // Initialize all used peripherals.
-    //irq_initialize_vectors();
-    //cpu_irq_enable();
     sysclk_init();
+    irq_initialize_vectors();
+    cpu_irq_enable();
     board_init();
     //console_init();
     //spi_init();
     //adc_setup();
-    //udc_start();
-
-    gpio_configure_pin (PIO_PA11_IDX, PIO_OUTPUT_1);
-    gpio_set_pin_high (PIO_PA11_IDX);
-    for(;;);
+    udc_start();
+    gpio_set_pin_high(GPIO_LED1);
     
+    for(;;) task();
     SCPI_Init(&G_SCPI_CONTEXT);
 
     puts("**Initialization successful\r");

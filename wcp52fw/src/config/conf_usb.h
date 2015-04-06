@@ -145,11 +145,7 @@ void callback_cdc_rx_notify(uint8_t port);
 //#define  UDI_CDC_LOW_RATE
 
 //! Default configuration of communication port
-#if BOARD == UC3B_BOARD_CONTROLLER
-# define  UDI_CDC_DEFAULT_RATE             57600
-#else
 # define  UDI_CDC_DEFAULT_RATE             115200
-#endif
 #define  UDI_CDC_DEFAULT_STOPBITS         CDC_STOP_BITS_1
 #define  UDI_CDC_DEFAULT_PARITY           CDC_PAR_NONE
 #define  UDI_CDC_DEFAULT_DATABITS         8

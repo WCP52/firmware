@@ -16,6 +16,8 @@ OBJECTS = $(patsubst %.c,%.o,${SOURCES})
 
 DEP_FILES = $(patsubst %.c,%.d,${SOURCES} ${ASF_SOURCES}) # used by 'clean'
 
+PROG_FILE ?= firmware.elf
+
 ###################################################
 # Buildchain tools
 
@@ -31,15 +33,15 @@ ARM_CFLAGS = \
 	-mlong-calls -D__SAM4S4C__ -DUDD_ENABLE \
 	-DBOARD=USER_BOARD \
 
-ARM_LDFLAGS = -Wl,--entry=Reset_Handler -Wl,--cref --specs=nosys.specs \
-	-Wl,--gc-sections -Wl,-T src/ASF/flash.ld -Wl,-Map=firmware.map,--cref \
-	-Lsrc/ASF/thirdpart/CMSIS/Lib/GCC
+ARM_LDFLAGS = -Wl,--entry=Reset_Handler -Wl,--cref -mcpu=cortex-m4 -mthumb \
+		  -D=__sam4s4c__ --specs=nosys.specs -pipe -Wl,--gc-sections -Wl,-T \
+		  src/ASF/flash.ld -Wl,-Map=flash.map,--cref
 
 ###################################################
 # Main build flags
 
 LANG_CFLAGS = -Wall -std=c99 -g -fdata-sections -ffunction-sections
-${OBJECTS}: EXTRA_CFLAGS := -Wextra -Werror
+${OBJECTS}: EXTRA_CFLAGS := -Wextra #-Werror
 
 ###################################################
 # Library flags
@@ -111,7 +113,7 @@ clean:
 program: firmware.hex jlink-script.jlink
 	#JLinkExe -device ATSAM4S4C -CommanderScript jlink-script.jlink
 	# -c 'at91sam4 gpnvm set 1'
-	openocd -f flash.cfg -c init -c halt -c 'program firmware.elf verify' -c reset -c exit
+	-openocd -f flash.cfg -c init -c halt -c "program ${PROG_FILE} verify" -c reset -c exit
 
 size_prof: firmware.elf
 	nm -CSr --size-sort $< | less

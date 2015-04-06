@@ -13,11 +13,11 @@ XPIN(GPIO_nCTS,         PC16,   PIO_OUTPUT_1,           "UART nCTS")\
 XPIN(GPIO_UART_RX,      PA9,    PIO_INPUT | PIO_PULLUP, "UART RX")\
 XPIN(GPIO_UART_TX,      PA10,   PIO_OUTPUT_1,           "UART TX")\
 XPINGROUP("Board management")\
-XPIN(GPIO_LED0,         PA11,   PIO_OUTPUT_0,           "Debug LED 0")\
+XPIN(GPIO_LED0,         PA11,   PIO_OUTPUT_1,           "Debug LED 0")\
 XPIN(GPIO_LED1,         PC2,    PIO_OUTPUT_0,           "Debug LED 1")\
 XPIN(GPIO_LED2,         PC12,   PIO_OUTPUT_0,           "Debug LED 2")\
 XPIN(GPIO_LED3,         PC13,   PIO_OUTPUT_0,           "Debug LED 3")\
-XPIN(GPIO_PWRDN,        PC17,   PIO_OUTPUT_0,           "Power supply control")\
+XPIN(GPIO_PWRDN,        PC17,   PIO_OUTPUT_1,           "Power supply control")\
 XPINGROUP("Instrument control")\
 XPIN(GPIO_CHANSEL,      PA2,    PIO_OUTPUT_0,           "Input channel select")\
 XPIN(GPIO_ATTEN,        PC14,   PIO_OUTPUT_0,           "Output attenuator enable")\

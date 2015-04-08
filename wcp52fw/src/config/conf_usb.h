@@ -1,46 +1,3 @@
-/**
- * \file
- *
- * \brief USB configuration file for CDC application
- *
- * Copyright (c) 2009-2014 Atmel Corporation. All rights reserved.
- *
- * \asf_license_start
- *
- * \page License
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. The name of Atmel may not be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * 4. This software may only be redistributed and used in connection with an
- *    Atmel microcontroller product.
- *
- * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
- * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * \asf_license_stop
- *
- */
-
 #ifndef _CONF_USB_H_
 #define _CONF_USB_H_
 
@@ -48,47 +5,18 @@
 #include "board.h"
 #include "usb_protocol_cdc.h"
 
-/**
- * USB Device Configuration
- * @{
- */
 
-//! Device definition (mandatory)
-#define  USB_DEVICE_VENDOR_ID             0xf055
+#define  USB_DEVICE_VENDOR_ID             0x1209
 #define  USB_DEVICE_PRODUCT_ID            0x4757
 #define  USB_DEVICE_MAJOR_VERSION         1
 #define  USB_DEVICE_MINOR_VERSION         0
-#define  USB_DEVICE_POWER                 100 // Consumption on Vbus line (mA)
-#define  USB_DEVICE_ATTR                  \
-	(USB_CONFIG_ATTR_SELF_POWERED)
-// (USB_CONFIG_ATTR_BUS_POWERED)
-//	(USB_CONFIG_ATTR_REMOTE_WAKEUP|USB_CONFIG_ATTR_SELF_POWERED)
-//	(USB_CONFIG_ATTR_REMOTE_WAKEUP|USB_CONFIG_ATTR_BUS_POWERED)
-
-//! USB Device string definitions (Optional)
-#define  USB_DEVICE_MANUFACTURE_NAME      "ATMEL ASF"
-#define  USB_DEVICE_PRODUCT_NAME          "CDC Virtual Com"
+#define  USB_DEVICE_POWER                 20 // mA
+#define  USB_DEVICE_ATTR                  (USB_CONFIG_ATTR_SELF_POWERED)
+#define  USB_DEVICE_MANUFACTURE_NAME      "WCP52"
+#define  USB_DEVICE_PRODUCT_NAME          "GPhA 1"
 // #define  USB_DEVICE_SERIAL_NAME           "12...EF"
 
-
-/**
- * Device speeds support
- * Low speed not supported by CDC
- * @{
- */
-//! To authorize the High speed
-#if (UC3A3||UC3A4)
-#define  USB_DEVICE_HS_SUPPORT
-#elif (SAM3XA||SAM3U)
-#define  USB_DEVICE_HS_SUPPORT
-#endif
-//@}
-
-
-/**
- * USB Device Callbacks definitions (Optional)
- * @{
- */
+// USB callbacks
 void main_sof_action (void);
 void main_suspend_action (void);
 void main_resume_action (void);
@@ -96,42 +24,19 @@ void main_resume_action (void);
 #define  UDC_SOF_EVENT()                  main_sof_action()
 #define  UDC_SUSPEND_EVENT()              main_suspend_action()
 #define  UDC_RESUME_EVENT()               main_resume_action()
-//! Mandatory when USB_DEVICE_ATTR authorizes remote wakeup feature
-// #define  UDC_REMOTEWAKEUP_ENABLE()        user_callback_remotewakeup_enable()
-// extern void user_callback_remotewakeup_enable(void);
-// #define  UDC_REMOTEWAKEUP_DISABLE()       user_callback_remotewakeup_disable()
-// extern void user_callback_remotewakeup_disable(void);
-#ifdef USB_DEVICE_LPM_SUPPORT
-#define  UDC_SUSPEND_LPM_EVENT()          main_suspend_lpm_action()
-#define  UDC_REMOTEWAKEUP_LPM_ENABLE()    main_remotewakeup_lpm_enable()
-#define  UDC_REMOTEWAKEUP_LPM_DISABLE()   main_remotewakeup_lpm_disable()
-#endif
-//! When a extra string descriptor must be supported
-//! other than manufacturer, product and serial string
-// #define  UDC_GET_EXTRA_STRING()
-//@}
-
-//@}
 
 
-/**
- * USB Interface Configuration
- * @{
- */
-/**
- * Configuration of CDC interface
- * @{
- */
+// CDC library configuration
 
-//! Define two USB communication ports
-#define  UDI_CDC_PORT_NB 1
+#define  UDI_CDC_PORT_NB 1 // Number of ports
 
 bool callback_cdc_enable (uint8_t port);
 void callback_cdc_disable (uint8_t port);
 void callback_cdc_set_coding_ext(uint8_t port, usb_cdc_line_coding_t *cfg);
 void callback_cdc_set_dtr(uint8_t port, bool b_enable);
 void callback_cdc_rx_notify(uint8_t port);
-//! Interface callback definition
+
+// CDC callbacks
 #define  UDI_CDC_ENABLE_EXT(port)         callback_cdc_enable(port)
 #define  UDI_CDC_DISABLE_EXT(port)        callback_cdc_disable(port)
 #define  UDI_CDC_RX_NOTIFY(port)          callback_cdc_rx_notify(port)
@@ -140,24 +45,11 @@ void callback_cdc_rx_notify(uint8_t port);
 #define  UDI_CDC_SET_DTR_EXT(port,set)    callback_cdc_set_dtr(port,set)
 #define  UDI_CDC_SET_RTS_EXT(port,set)
 
-//! Define it when the transfer CDC Device to Host is a low rate (<512000 bauds)
-//! to reduce CDC buffers size
-//#define  UDI_CDC_LOW_RATE
-
-//! Default configuration of communication port
-# define  UDI_CDC_DEFAULT_RATE             115200
+// CDC settings
+#define  UDI_CDC_DEFAULT_RATE             115200
 #define  UDI_CDC_DEFAULT_STOPBITS         CDC_STOP_BITS_1
 #define  UDI_CDC_DEFAULT_PARITY           CDC_PAR_NONE
 #define  UDI_CDC_DEFAULT_DATABITS         8
-//@}
-//@}
-
-
-/**
- * USB Device Driver Configuration
- * @{
- */
-//@}
 
 #include "udi_cdc_conf.h"
 

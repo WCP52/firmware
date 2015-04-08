@@ -6,7 +6,7 @@
 #ifndef _WCP52_UTIL_H
 #define _WCP52_UTIL_H
 
-#include "asf.h"
+#include <gpio.h>
 
 /**
  * Set a pin to a given value.

@@ -1,4 +1,6 @@
-#include "asf.h"
+// Atmel ASF includes
+#include <pmc.h>
+
 #include <stdio.h>
 #include <inttypes.h>
 #include "scpi/scpi.h"

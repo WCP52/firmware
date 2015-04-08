@@ -3,7 +3,11 @@
  * DDS synthesizer control functions
  */
 
-#include "asf.h"
+// Atmel ASF includes
+#include <delay.h>
+#include <gpio.h>
+#include <spi.h>
+
 #include "conf_board.h"
 #include <string.h>
 

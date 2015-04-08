@@ -3,9 +3,12 @@
  * \brief SCPI Test:* commands
  */
 
+// Atmel ASF includes
+#include <pio.h>
+#include <spi.h>
+
 #include "scpi/scpi.h"
 #include "scpi-test.h"
-#include "asf.h"
 #include "conf_board.h"
 #include "synth.h"
 #include "acquisition.h"

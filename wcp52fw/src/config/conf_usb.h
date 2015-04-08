@@ -4,6 +4,7 @@
 #include "compiler.h"
 #include "board.h"
 #include "usb_protocol_cdc.h"
+#include "usb-functions.h"
 
 
 #define  USB_DEVICE_VENDOR_ID             0x1209
@@ -17,9 +18,6 @@
 // #define  USB_DEVICE_SERIAL_NAME           "12...EF"
 
 // USB callbacks
-void main_sof_action (void);
-void main_suspend_action (void);
-void main_resume_action (void);
 #define  UDC_VBUS_EVENT(b_vbus_high)
 #define  UDC_SOF_EVENT()                  main_sof_action()
 #define  UDC_SUSPEND_EVENT()              main_suspend_action()
@@ -29,12 +27,6 @@ void main_resume_action (void);
 // CDC library configuration
 
 #define  UDI_CDC_PORT_NB 1 // Number of ports
-
-bool callback_cdc_enable (uint8_t port);
-void callback_cdc_disable (uint8_t port);
-void callback_cdc_set_coding_ext(uint8_t port, usb_cdc_line_coding_t *cfg);
-void callback_cdc_set_dtr(uint8_t port, bool b_enable);
-void callback_cdc_rx_notify(uint8_t port);
 
 // CDC callbacks
 #define  UDI_CDC_ENABLE_EXT(port)         callback_cdc_enable(port)

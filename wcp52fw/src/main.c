@@ -3,20 +3,30 @@
  * Main loop and initializers.
  */
 
+// libc includes
+#include <assert.h>
+#include <ctype.h>
+#include <inttypes.h>
+#include <stdio.h>
+#include <string.h>
+
+// Atmel ASF includes
+#include <gpio.h>
+#include <ioport.h>
+#include <spi.h>
+#include <spi_master.h>
+#include <stdio_usb.h>
+#include <sysclk.h>
+#include "conf_board.h"
+#include "usb-functions.h"
+
+// Software libraries
 #include "scpi/scpi.h"
 #include "scpi-def.h"
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <assert.h>
-#include "asf.h"
-#include "serial.h"
-#include "acquisition.h"
-#include "conf_board.h"
-#include <udc.h>
 
+// Hardware support
+#include "acquisition.h"
 #include "synth.h"
-#include "util.h"
 
 static void pins_init(void);
 
@@ -33,15 +43,6 @@ void board_init(void)
     pins_init();
     pmc_enable_periph_clk(ID_PIOB);
 }
-
-/**
- * Initialize the UART stdio console.
- */
-static void console_init(void)
-{
-    stdio_usb_init();
-}
-
 
 /**
  * Initialize the SPI controller.
@@ -73,14 +74,12 @@ static void spi_init(void)
 static void pins_init(void)
 {
     /* Configure pins */
-#define XPINGROUP(desc)
-#define XPIN(name, pin, setting, comment) gpio_configure_pin(PIO_ ## pin ## _IDX, (setting));
-PIN_LIST
-#undef XPIN
-#undef XPINGROUP
+#   define XPINGROUP(desc)
+#   define XPIN(name, pin, setting, comment) gpio_configure_pin(PIO_ ## pin ## _IDX, (setting));
+    PIN_LIST
+#   undef XPIN
+#   undef XPINGROUP
 }
-
-extern bool cdc_enabled;
 
 /**
  * Main function.
@@ -96,39 +95,37 @@ int main(void)
     board_init();
     spi_init();
     adc_setup();
-    //udc_start();
-    console_init();
+    stdio_usb_init();
     gpio_set_pin_high(GPIO_LED1);
     
     SCPI_Init(&G_SCPI_CONTEXT);
 
-    //puts("**Initialization successful\r");
-
     const size_t SMBUFFER_SIZE = 10;
     char smbuffer[10];
     for (;;) {
-        /* Get into smbuffer until either full, or a \r or \n */
+        // Get into smbuffer until either full, or a \r or \n
         size_t i;
-        for (i = 0; i < SMBUFFER_SIZE - 1; ++i) {
+        i = 0;
+        while (i < SMBUFFER_SIZE - 1) {
             char ch = 0;
-            if (cdc_enabled) {
+            if (G_CDC_ENABLED) {
                 ch = udi_cdc_getc();
             } else {
-                --i;
                 continue;
             }
-            if (!ch) continue;
+            if (!ch) {
+                continue;
+            }
             if (ch == '\r' || ch == '\n') {
                 smbuffer[i] = ch;
                 ++i;
                 break;
-            }
-            else if (ch > 0 && ch <= 255) {
+            } else {
+                ++i;
                 smbuffer[i] = ch;
             }
         }
-        /* Terminate! */
-        smbuffer[i] = 0;
+        smbuffer[i] = 0; // Terminate!
         SCPI_Input(&G_SCPI_CONTEXT, smbuffer, strlen (smbuffer));
     }
 

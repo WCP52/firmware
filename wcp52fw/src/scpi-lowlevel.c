@@ -89,15 +89,18 @@ scpi_result_t LOWLEVEL_PIN_ACTION (scpi_t *context)
     buffer[len] = 0;
 
     bool found_pin = false;
-#   define XPINGROUP(grp)
-#   define XPIN(name, pin, flags, descr) \
-    if (!found_pin && !strcmp (#name, buffer)) { \
-        found_pin = true; \
-        pin_action(PIO_ ## pin ## _IDX, (flags), buffer); \
+
+    bool each_pin_action (const struct pin_info *pin) {
+        if (!strcmp (pin->pin_name_str, buffer)) {
+            pin_action(pin->index, pin->flags, buffer);
+            found_pin = true;
+            return false; // break
+        } else {
+            return true; // continue
+        }
     }
-    PIN_LIST
-#   undef XPINGROUP
-#   undef XPIN
+
+    for_each_pin (&each_pin_action, NULL);
 
     if (!found_pin) {
         printf ("Pin '%s' not found!\r\n", buffer);
@@ -111,11 +114,17 @@ scpi_result_t LOWLEVEL_LIST_PINS (scpi_t *context)
 {
     (void) context;
 
-#   define XPINGROUP(grp)  printf("== %s ==\r\n", (grp));
-#   define XPIN(name, pin, flags, descr)  printf("%-20s %-30s %s\r\n", #name, #flags, (descr));
-    PIN_LIST
-#   undef XPINGROUP
-#   undef XPIN
+    bool print_pin_group (const char *text) {
+        printf ("==== %s ====\r\n", text);
+        return true;
+    }
+
+    bool print_pin (const struct pin_info *pin) {
+        printf ("%-20s %-30s %s\r\n", pin->pin_name_str, pin->flags_str, pin->description);
+        return true;
+    }
+
+    for_each_pin (&print_pin, &print_pin_group);
 
     return SCPI_RES_OK;
 }

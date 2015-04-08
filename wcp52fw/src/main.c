@@ -22,6 +22,7 @@
 // Software libraries
 #include "scpi/scpi.h"
 #include "scpi-def.h"
+#include "util.h"
 
 // Hardware support
 #include "acquisition.h"
@@ -75,12 +76,12 @@ static void spi_init(void)
  */
 static void pins_init(void)
 {
-    /* Configure pins */
-#   define XPINGROUP(desc)
-#   define XPIN(name, pin, setting, comment) pio_configure_pin(PIO_ ## pin ## _IDX, (setting));
-    PIN_LIST
-#   undef XPIN
-#   undef XPINGROUP
+    bool configure_pin (const struct pin_info *pin) {
+        pio_configure_pin(pin->index, pin->flags);
+        return true;
+    }
+
+    for_each_pin (&configure_pin, NULL);
 }
 
 /**

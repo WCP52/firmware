@@ -6,7 +6,7 @@
 #ifndef _WCP52_UTIL_H
 #define _WCP52_UTIL_H
 
-#include <gpio.h>
+#include <pio.h>
 
 /**
  * Set a pin to a given value.
@@ -16,9 +16,9 @@
 static inline void util_set_pin(uint32_t pin, int_fast8_t value)
 {
     if (value) {
-        gpio_set_pin_high(pin);
+        pio_set_pin_high(pin);
     } else {
-        gpio_set_pin_low(pin);
+        pio_set_pin_low(pin);
     }
 }
 

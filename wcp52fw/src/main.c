@@ -11,8 +11,7 @@
 #include <string.h>
 
 // Atmel ASF includes
-#include <gpio.h>
-#include <ioport.h>
+#include <pio.h>
 #include <spi.h>
 #include <spi_master.h>
 #include <stdio_usb.h>
@@ -39,7 +38,10 @@ void board_init(void)
     // Disable watchdog timer
     WDT->WDT_MR = WDT_MR_WDDIS;
 
-    ioport_init();
+	sysclk_enable_peripheral_clock(ID_PIOA);
+	sysclk_enable_peripheral_clock(ID_PIOB);
+	sysclk_enable_peripheral_clock(ID_PIOC);
+
     pins_init();
     pmc_enable_periph_clk(ID_PIOB);
 }
@@ -75,7 +77,7 @@ static void pins_init(void)
 {
     /* Configure pins */
 #   define XPINGROUP(desc)
-#   define XPIN(name, pin, setting, comment) gpio_configure_pin(PIO_ ## pin ## _IDX, (setting));
+#   define XPIN(name, pin, setting, comment) pio_configure_pin(PIO_ ## pin ## _IDX, (setting));
     PIN_LIST
 #   undef XPIN
 #   undef XPINGROUP
@@ -96,7 +98,7 @@ int main(void)
     spi_init();
     adc_setup();
     stdio_usb_init();
-    gpio_set_pin_high(GPIO_LED1);
+    pio_set_pin_high(GPIO_LED1);
     
     SCPI_Init(&G_SCPI_CONTEXT);
 

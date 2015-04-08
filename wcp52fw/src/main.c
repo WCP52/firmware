@@ -123,8 +123,8 @@ int main(void)
                 ++i;
                 break;
             } else {
-                ++i;
                 smbuffer[i] = ch;
+                ++i;
             }
         }
         smbuffer[i] = 0; // Terminate!

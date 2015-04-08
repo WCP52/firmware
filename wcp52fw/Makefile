@@ -4,6 +4,7 @@ SOURCES = \
 	src/scpi.c \
 	src/scpi-def.c \
 	src/scpi-test.c \
+	src/scpi-lowlevel.c \
 	src/synth.c \
 	src/usb-functions.c \
 	src/util.c \

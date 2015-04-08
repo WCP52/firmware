@@ -40,6 +40,7 @@
 #include "scpi/scpi.h"
 #include "scpi-def.h"
 #include "scpi-test.h"
+#include "scpi-lowlevel.h"
 
 static const scpi_command_t scpi_commands[] = {
     /* IEEE Mandated Commands (SCPI std V1999.0 4.1.1) */
@@ -74,6 +75,12 @@ static const scpi_command_t scpi_commands[] = {
     {.pattern = "STATus:QUEStionable:ENABle?", .callback = SCPI_StatusQuestionableEnableQ,},
 
     {.pattern = "STATus:PRESet", .callback = SCPI_StatusPreset,},
+
+    // Low-level
+    {.pattern = "LOWlevel:SETpin", .callback = LOWLEVEL_PIN_ACTION,},
+    {.pattern = "LOWlevel:CLRpin", .callback = LOWLEVEL_PIN_ACTION,},
+    {.pattern = "LOWlevel:GETpin", .callback = LOWLEVEL_PIN_ACTION,},
+    {.pattern = "LOWlevel:LISTpins", .callback = LOWLEVEL_LIST_PINS,},
 
     /* Test commands */
     {.pattern = "Test:SPI", .callback = TEST_SPI,},
